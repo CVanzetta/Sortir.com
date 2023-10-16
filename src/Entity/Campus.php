@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
+use App\Entity\Participant;
 use App\Repository\CampusRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CampusRepository::class)]
-class Campus
+class Campus extends Participant
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
