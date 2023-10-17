@@ -4,37 +4,41 @@ namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-class Participant
+class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 55)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 55)]
     private ?string $prenom = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $telephone = null;
 
-    #[ORM\Column(length: 100)]
-    private ?string $mail = null;
+    #[ORM\Column(length: 180, unique: true)]
+    private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column]
+    private array $roles = [];
+
+    /**
+     * @var string The hashed password
+     */
+    #[ORM\Column]
     private ?string $motPasse = null;
-
     #[ORM\Column]
     private ?bool $administrateur = null;
 
     #[ORM\Column]
     private ?bool $actif = null;
-
     #[ORM\ManyToOne(inversedBy: 'participants')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Sortie $Sortie = null;
@@ -43,13 +47,10 @@ class Participant
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $Campus = null;
 
-
-
     public function getId(): ?int
     {
         return $this->id;
     }
-
 
     public function getNom(): ?string
     {
@@ -95,22 +96,52 @@ class Participant
     public function setMail(string $mail): static
     {
         $this->mail = $mail;
+        return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
 
         return $this;
     }
 
-    public function getMotPasse(): ?string
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
         return $this->motPasse;
     }
 
-    public function setMotPasse(string $motPasse): static
+    public function setPassword(string $motPasse): static
     {
         $this->motPasse = $motPasse;
 
         return $this;
     }
-
     public function isAdministrateur(): ?bool
     {
         return $this->administrateur;
@@ -158,4 +189,15 @@ class Participant
 
         return $this;
     }
+
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
 }
