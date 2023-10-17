@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Inscription</h1>
+    {{ form_start(form) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.prenom) }}
+    {{ form_row(form.telephone) }}
+    {{ form_row(form.mail) }}
+    {{ form_row(form.motPasse) }}
+    {{ form_row(form.confirmMotPasse) }}
+    {{ form_row(form.campus) }}
+    {{ form_row(form.photo) }}
+    {{ form_row(form.administrateur) }}
+    {{ form_row(form.actif) }}
+    <button type="submit">S'inscrire</button>
+    {{ form_end(form) }}
+{% endblock %}

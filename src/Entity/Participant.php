@@ -12,7 +12,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
     #[ORM\Column(length: 55)]
     private ?string $nom = null;
@@ -24,7 +24,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $telephone = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    private ?string $mail = null;
 
     #[ORM\Column]
     private array $roles = [];
@@ -106,7 +106,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string) $this->mail;
     }
 
     /**
@@ -198,6 +198,16 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getMotPasse(): ?string
+    {
+        return $this->motPasse;
+    }
+
+    public function setMotPasse(?string $motPasse): void
+    {
+        $this->motPasse = $motPasse;
     }
 
 }
