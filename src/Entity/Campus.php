@@ -15,14 +15,14 @@ class Campus
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
+//ajoue contraite de validations
+    #[ORM\Column(length: 255 , unique: true)]
     private ?string $nom = null;
 
-    #[ORM\OneToMany(mappedBy: 'Campus', targetEntity: Participant::class)]
+    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Participant::class)]
     private Collection $participants;
 
-    #[ORM\OneToMany(mappedBy: 'Campus', targetEntity: Sortie::class)]
+    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Sortie::class)]
     private Collection $sorties;
 
     public function __construct()

@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EtatRepository::class)]
-class Etat extends Sortie
+class Etat
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,15 +16,14 @@ class Etat extends Sortie
     private ?int $id = null;
 
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50,unique: true)]
     private ?string $libelle = null;
 
-    #[ORM\OneToMany(mappedBy: 'Lieu', targetEntity: Sortie::class)]
+    #[ORM\OneToMany(mappedBy: 'etat', targetEntity: Sortie::class)]
     private Collection $sorties;
 
     public function __construct()
     {
-        parent::__construct();
         $this->sorties = new ArrayCollection();
     }
 

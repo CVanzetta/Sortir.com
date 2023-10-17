@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,8 +28,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $mail = null;
 
-    #[ORM\Column]
-    private array $roles = [];
 
     /**
      * @var string The hashed password
@@ -39,13 +39,23 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?bool $actif = null;
-    #[ORM\ManyToOne(inversedBy: 'participants')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Sortie $Sortie = null;
+
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Campus $Campus = null;
+    private ?Campus $campus = null;
+
+    #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
+    private Collection $sortiesOrganiser;
+
+    #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participants')]
+    private Collection $sorties;
+
+    public function __construct()
+    {
+        $this->sortiesOrganiser = new ArrayCollection();
+        $this->sorties = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -121,13 +131,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
     /**
      * @see PasswordAuthenticatedUserInterface
      */
@@ -136,12 +139,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->motPasse;
     }
 
-    public function setPassword(string $motPasse): static
-    {
-        $this->motPasse = $motPasse;
-
-        return $this;
-    }
     public function isAdministrateur(): ?bool
     {
         return $this->administrateur;
@@ -166,26 +163,14 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSortie(): ?Sortie
-    {
-        return $this->Sortie;
-    }
-
-    public function setSortie(?Sortie $Sortie): static
-    {
-        $this->Sortie = $Sortie;
-
-        return $this;
-    }
-
     public function getCampus(): ?Campus
     {
-        return $this->Campus;
+        return $this->campus;
     }
 
-    public function setCampus(?Campus $Campus): static
+    public function setCampus(?Campus $campus): static
     {
-        $this->Campus = $Campus;
+        $this->campus = $campus;
 
         return $this;
     }
@@ -208,6 +193,63 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setMotPasse(?string $motPasse): void
     {
         $this->motPasse = $motPasse;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSortiesOrganiser(): Collection
+    {
+        return $this->sortiesOrganiser;
+    }
+
+    public function addSortiesOrganiser(Sortie $sortiesOrganiser): static
+    {
+        if (!$this->sortiesOrganiser->contains($sortiesOrganiser)) {
+            $this->sortiesOrganiser->add($sortiesOrganiser);
+            $sortiesOrganiser->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortiesOrganiser(Sortie $sortiesOrganiser): static
+    {
+        if ($this->sortiesOrganiser->removeElement($sortiesOrganiser)) {
+            // set the owning side to null (unless already changed)
+            if ($sortiesOrganiser->getOrganisateur() === $this) {
+                $sortiesOrganiser->setOrganisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSorties(): Collection
+    {
+        return $this->sorties;
+    }
+
+    public function addSorty(Sortie $sorty): static
+    {
+        if (!$this->sorties->contains($sorty)) {
+            $this->sorties->add($sorty);
+            $sorty->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSorty(Sortie $sorty): static
+    {
+        if ($this->sorties->removeElement($sorty)) {
+            $sorty->removeParticipant($this);
+        }
+
+        return $this;
     }
 
 }

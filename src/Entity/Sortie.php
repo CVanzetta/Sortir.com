@@ -19,7 +19,7 @@ class Sortie
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column]
@@ -31,31 +31,33 @@ class Sortie
     #[ORM\Column]
     private ?int $nbInscriptionsMax = null;
 
-    #[ORM\Column(length: 2500, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infosSortie = null;
 
-    #[ORM\Column(length: 30)]
-    private ?string $etat = null;
 
-    #[ORM\OneToMany(mappedBy: 'Sortie', targetEntity: Participant::class)]
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Lieu $lieu = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Etat $etat = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sortiesOrganiser')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Participant $organisateur = null;
+
+    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sorties')]
     private Collection $participants;
-
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
-    private ?Campus $Campus = null;
-
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Lieu $Lieu = null;
-
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Etat $Etat = null;
 
     public function __construct()
     {
         $this->participants = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -135,14 +137,50 @@ class Sortie
         return $this;
     }
 
-    public function getEtat(): ?string
+    public function getEtat(): ?Etat
     {
-        return $this->Etat;
+        return $this->etat;
     }
 
-    public function setEtat(string $Etat): static
+    public function setEtat(Etat $etat): static
     {
-        $this->Etat = $Etat;
+        $this->etat = $etat;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): static
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
+    public function getLieu(): Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): static
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?Participant
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Participant $organisateur): static
+    {
+        $this->organisateur = $organisateur;
 
         return $this;
     }
@@ -159,7 +197,6 @@ class Sortie
     {
         if (!$this->participants->contains($participant)) {
             $this->participants->add($participant);
-            $participant->setSortie($this);
         }
 
         return $this;
@@ -167,36 +204,7 @@ class Sortie
 
     public function removeParticipant(Participant $participant): static
     {
-        if ($this->participants->removeElement($participant)) {
-            // set the owning side to null (unless already changed)
-            if ($participant->getSortie() === $this) {
-                $participant->setSortie(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getCampus(): ?Campus
-    {
-        return $this->Campus;
-    }
-
-    public function setCampus(?Campus $Campus): static
-    {
-        $this->Campus = $Campus;
-
-        return $this;
-    }
-
-    public function getLieu(): Lieu
-    {
-        return $this->Lieu;
-    }
-
-    public function setLieu(?Lieu $Lieu): static
-    {
-        $this->Lieu = $Lieu;
+        $this->participants->removeElement($participant);
 
         return $this;
     }
