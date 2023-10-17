@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,9 +15,6 @@ class Sortie extends Campus
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column]
-    private ?int $idSortie = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -38,22 +37,31 @@ class Sortie extends Campus
     #[ORM\Column(length: 30)]
     private ?string $etat = null;
 
+    #[ORM\OneToMany(mappedBy: 'Sortie', targetEntity: Participant::class)]
+    private Collection $participants;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    private ?Campus $Campus = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Lieu $Lieu = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Etat $Etat = null;
+
+    public function __construct()
+    {
+        $this->participants = new ArrayCollection();
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIdSortie(): ?int
-    {
-        return $this->idSortie;
-    }
-
-    public function setIdSortie(int $idSortie): static
-    {
-        $this->idSortie = $idSortie;
-
-        return $this;
-    }
 
     public function getNom(): ?string
     {
@@ -129,12 +137,66 @@ class Sortie extends Campus
 
     public function getEtat(): ?string
     {
-        return $this->etat;
+        return $this->Etat;
     }
 
-    public function setEtat(string $etat): static
+    public function setEtat(string $Etat): static
     {
-        $this->etat = $etat;
+        $this->Etat = $Etat;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Participant>
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(Participant $participant): static
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants->add($participant);
+            $participant->setSortie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Participant $participant): static
+    {
+        if ($this->participants->removeElement($participant)) {
+            // set the owning side to null (unless already changed)
+            if ($participant->getSortie() === $this) {
+                $participant->setSortie(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->Campus;
+    }
+
+    public function setCampus(?Campus $Campus): static
+    {
+        $this->Campus = $Campus;
+
+        return $this;
+    }
+
+    public function getLieu(): Lieu
+    {
+        return $this->Lieu;
+    }
+
+    public function setLieu(?Lieu $Lieu): static
+    {
+        $this->Lieu = $Lieu;
 
         return $this;
     }

@@ -13,8 +13,6 @@ class Participant
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $idparticipant = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -37,22 +35,21 @@ class Participant
     #[ORM\Column]
     private ?bool $actif = null;
 
+    #[ORM\ManyToOne(inversedBy: 'participants')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Sortie $Sortie = null;
+
+    #[ORM\ManyToOne(inversedBy: 'participants')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $Campus = null;
+
+
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIdparticipant(): ?int
-    {
-        return $this->idparticipant;
-    }
-
-    public function setIdparticipant(int $idparticipant): static
-    {
-        $this->idparticipant = $idparticipant;
-
-        return $this;
-    }
 
     public function getNom(): ?string
     {
@@ -134,6 +131,30 @@ class Participant
     public function setActif(bool $actif): static
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    public function getSortie(): ?Sortie
+    {
+        return $this->Sortie;
+    }
+
+    public function setSortie(?Sortie $Sortie): static
+    {
+        $this->Sortie = $Sortie;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->Campus;
+    }
+
+    public function setCampus(?Campus $Campus): static
+    {
+        $this->Campus = $Campus;
 
         return $this;
     }

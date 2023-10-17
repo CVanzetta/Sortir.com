@@ -2,14 +2,13 @@
 
 namespace App\Entity;
 
-use App\Entity\Participant;
-use App\Repository\CampusRepository;
+use App\Repository\LieuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CampusRepository::class)]
-class Campus
+#[ORM\Entity(repositoryClass: LieuRepository::class)]
+class Lieu
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,15 +18,20 @@ class Campus
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\OneToMany(mappedBy: 'Campus', targetEntity: Participant::class)]
-    private Collection $participants;
+    #[ORM\Column(length: 255)]
+    private ?string $rue = null;
 
-    #[ORM\OneToMany(mappedBy: 'Campus', targetEntity: Sortie::class)]
+    #[ORM\Column]
+    private ?float $latitude = null;
+
+    #[ORM\Column]
+    private ?float $longitude = null;
+
+    #[ORM\OneToMany(mappedBy: 'Etat', targetEntity: Sortie::class)]
     private Collection $sorties;
 
     public function __construct()
     {
-        $this->participants = new ArrayCollection();
         $this->sorties = new ArrayCollection();
     }
 
@@ -36,7 +40,6 @@ class Campus
     {
         return $this->id;
     }
-
 
     public function getNom(): ?string
     {
@@ -50,32 +53,38 @@ class Campus
         return $this;
     }
 
-    /**
-     * @return Collection<int, Participant>
-     */
-    public function getParticipants(): Collection
+    public function getRue(): ?string
     {
-        return $this->participants;
+        return $this->rue;
     }
 
-    public function addParticipant(Participant $participant): static
+    public function setRue(string $rue): static
     {
-        if (!$this->participants->contains($participant)) {
-            $this->participants->add($participant);
-            $participant->setCampus($this);
-        }
+        $this->rue = $rue;
 
         return $this;
     }
 
-    public function removeParticipant(Participant $participant): static
+    public function getLatitude(): ?float
     {
-        if ($this->participants->removeElement($participant)) {
-            // set the owning side to null (unless already changed)
-            if ($participant->getCampus() === $this) {
-                $participant->setCampus(null);
-            }
-        }
+        return $this->latitude;
+    }
+
+    public function setLatitude(float $latitude): static
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(float $longitude): static
+    {
+        $this->longitude = $longitude;
 
         return $this;
     }
@@ -92,7 +101,7 @@ class Campus
     {
         if (!$this->sorties->contains($sorty)) {
             $this->sorties->add($sorty);
-            $sorty->setCampus($this);
+            $sorty->setEtat($this);
         }
 
         return $this;
@@ -102,8 +111,8 @@ class Campus
     {
         if ($this->sorties->removeElement($sorty)) {
             // set the owning side to null (unless already changed)
-            if ($sorty->getCampus() === $this) {
-                $sorty->setCampus(null);
+            if ($sorty->getEtat() === $this) {
+                $sorty->setEtat(null);
             }
         }
 
