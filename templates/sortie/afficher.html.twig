@@ -1,0 +1,31 @@
+{# templates/sortie/afficher.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ sortie.getNom() }}</h1>
+
+    <p>Date et heure de la sortie : {{ sortie.getDateHeureDebut()|date("Y-m-d H:i:s") }}</p>
+    <p>Date limite d'inscription : {{ sortie.getDateLimiteInscription()|date("Y-m-d") }}</p>
+    <p>Durée : {{ sortie.getDuree() }} heures</p>
+    <p>Infos sortie : {{ sortie.getInfosSortie() }}</p>
+
+    <h2>Organisateur</h2>
+    <p>Nom de l'organisateur : {{ sortie.getOrganisateur().getNom() }}</p>
+
+    <h2>Lieu</h2>
+    <p>Nom du lieu : {{ sortie.getLieu().getNom() }}</p>
+    <p>Ville : {{ sortie.getLieu().getVille().getNom() }}</p>
+
+    <h2>Campus</h2>
+    <p>Nom du campus : {{ sortie.getCampus().getNom() }}</p>
+
+    <h2>État</h2>
+    <p>État de la sortie : {{ sortie.getEtat().getNom() }}</p>
+
+    <h2>Liste des participants inscrits</h2>
+    <ul>
+        {% for participant in sortie.getParticipants() %}
+            <li>{{ participant.getNom() }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -23,6 +23,7 @@ class Etat
     private Collection $sorties;
 
     public function __construct()
+
     {
         $this->sorties = new ArrayCollection();
     }
