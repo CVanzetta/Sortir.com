@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}S'inscrire en tant que Participant{% endblock %}
+
+{% block body %}
+    <h1>Créer son compte</h1>
+
+    {{ form_errors(registrationForm) }}
+
+    {{ form_start(registrationForm) }}
+        {{ form_widget(registrationForm) }}
+
+        <button type="submit" class="btn">S'inscrire</button>
+    {{ form_end(registrationForm) }}
+{% endblock %}
