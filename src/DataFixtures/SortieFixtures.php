@@ -31,7 +31,7 @@ class SortieFixtures extends Fixture
         $sorty->setLieu($lieu);
 
         // Exemple : Relation avec Etat
-        $etat = $manager->getRepository(Etat::class)->findOneBy(['nom' => 'NomDeLetat']);
+        $etat = $manager->getRepository(Etat::class)->findOneBy(['libelle' => 'NomDeLetat']);
         $sorty->setEtat($etat);
 
         // Exemple : Relation avec Organisateur
