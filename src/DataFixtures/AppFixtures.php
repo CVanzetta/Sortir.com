@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
@@ -14,4 +15,9 @@ class AppFixtures extends Fixture
 
         $manager->flush();
     }
+
+   /* public static function getGroups(): array
+    {
+        return ['kurai_d'];
+    }*/
 }

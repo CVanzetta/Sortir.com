@@ -31,7 +31,7 @@ final class Version20231017140225 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_2F577D59A73F0036 ON lieu (ville_id)');
         $this->addSql('ALTER TABLE participant DROP FOREIGN KEY FK_D79F6B11CC72D953');
         $this->addSql('DROP INDEX IDX_D79F6B11CC72D953 ON participant');
-        $this->addSql('ALTER TABLE participant DROP sortie_id, DROP roles');
+        $this->addSql('ALTER TABLE participant DROP sortie_id');
         $this->addSql('ALTER TABLE sortie DROP FOREIGN KEY FK_3C3FD3F2AF5D55E1');
         $this->addSql('ALTER TABLE sortie ADD organisateur_id INT NOT NULL, DROP etat, CHANGE campus_id campus_id INT NOT NULL, CHANGE date_heure_debut date_heure_debut DATETIME NOT NULL, CHANGE infos_sortie infos_sortie LONGTEXT DEFAULT NULL');
         $this->addSql('ALTER TABLE sortie ADD CONSTRAINT FK_3C3FD3F2AF5D55E1 FOREIGN KEY (campus_id) REFERENCES campus (id)');
@@ -56,7 +56,7 @@ final class Version20231017140225 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_3C3FD3F2D936B2FA ON sortie');
         $this->addSql('ALTER TABLE sortie ADD etat VARCHAR(30) NOT NULL, DROP organisateur_id, CHANGE campus_id campus_id INT DEFAULT NULL, CHANGE date_heure_debut date_heure_debut DATE NOT NULL, CHANGE infos_sortie infos_sortie VARCHAR(2500) DEFAULT NULL');
         $this->addSql('ALTER TABLE ville CHANGE code_postal code_postal INT NOT NULL');
-        $this->addSql('ALTER TABLE participant ADD sortie_id INT NOT NULL, ADD roles JSON NOT NULL');
+        $this->addSql('ALTER TABLE participant ADD sortie_id INT NOT NULL');
         $this->addSql('ALTER TABLE participant ADD CONSTRAINT FK_D79F6B11CC72D953 FOREIGN KEY (sortie_id) REFERENCES sortie (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
         $this->addSql('CREATE INDEX IDX_D79F6B11CC72D953 ON participant (sortie_id)');
     }
