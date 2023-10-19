@@ -10,6 +10,6 @@
     {{ form_start(registrationForm) }}
         {{ form_widget(registrationForm) }}
 
-        <button type="submit" class="btn">S'inscrire</button>
+        <a href="{{ path('sInscrire') }}" class="btn">S'inscrire</a>
     {{ form_end(registrationForm) }}
 {% endblock %}
