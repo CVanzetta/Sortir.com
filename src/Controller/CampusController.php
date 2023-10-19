@@ -14,24 +14,39 @@ class CampusController extends AbstractController
     #[Route('/addcampus', name:'main_campus')]
     public function addCampus(EntityManagerInterface $entityManager): Response
     {
-        $campus = new Campus();
-        $campus->setNom('Angers');
 
-        $entityManager->persist($campus);
+        $campusRepository = $entityManager->getRepository(Campus::class);
+        $existingCampus = $campusRepository->findAll();
 
-        $campus = new Campus();
-        $campus->setNom('Rennes');
+        if (empty($existingCampus)) {
+            $campus = new Campus();
+            $campus->setNom('Angers');
 
-        $entityManager->persist($campus);
-
-        $campus = new Campus();
-        $campus->setNom('Nantes');
-
-        $entityManager->persist($campus);
-
-        $entityManager->flush();
+            $entityManager->persist($campus);
 
 
+            $campus = new Campus();
+            $campus->setNom('Rennes');
+
+            $entityManager->persist($campus);
+
+
+            $campus = new Campus();
+            $campus->setNom('Nantes');
+
+            $entityManager->persist($campus);
+
+
+            $campus = new Campus();
+            $campus->setNom('En Ligne');
+
+            $entityManager->persist($campus);
+
+
+            $entityManager->flush();
+
+        }
         return $this->render(view: 'main/campus.html.twig');
     }
+
 }

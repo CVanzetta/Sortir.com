@@ -28,7 +28,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $telephone = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $mail = null;
+    private ?string $email = null;
 
 
     /**
@@ -100,14 +100,14 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getMail(): ?string
+    public function getEmail(): ?string
     {
-        return $this->mail;
+        return $this->email;
     }
 
-    public function setMail(string $mail): static
+    public function setEmail(string $email): static
     {
-        $this->mail = $mail;
+        $this->email = $email;
         return $this;
     }
 
@@ -118,20 +118,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->mail;
+        return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
 
     /**
      * @see PasswordAuthenticatedUserInterface
@@ -253,4 +242,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+    * @see UserInterface
+    */
+    public function getRoles(): array
+    {
+        return [];
+    }
 }
