@@ -40,7 +40,7 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-                'choice_label' => 'name',
+                'choice_label' => 'nom',
             ]);
     }
 
