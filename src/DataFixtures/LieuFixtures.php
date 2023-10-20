@@ -5,7 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Lieu;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Serializer\Annotation\Groups;
+
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class LieuFixtures extends Fixture implements DependentFixtureInterface
