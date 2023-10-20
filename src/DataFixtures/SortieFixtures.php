@@ -9,43 +9,52 @@ use App\Entity\Participant;
 use App\Entity\Sortie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class SortieFixtures extends Fixture
+class SortieFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $sorty = new Sortie();
-        $sorty->setNom('Sortie de test');
-        $sorty->setDateHeureDebut(new \DateTime('2023-10-18 15:00:00'));
-        $sorty->setDuree(3);
-        $sorty->setDateLimiteInscription(new \DateTime('2023-10-17'));
-        $sorty->setNbInscriptionsMax(10);
-        $sorty->setInfosSortie('Ceci est une sortie de test.');
+        $sortie = new Sortie();
+        $sortie->setNom('Sortie de test');
+        $sortie->setDateHeureDebut(new \DateTime('2023-10-18 15:00:00'));
+        $sortie->setDuree(3);
+        $sortie->setDateLimiteInscription(new \DateTime('2023-10-17'));
+        $sortie->setNbInscriptionsMax(10);
+        $sortie->setInfosSortie('Ceci est une sortie de test.');
 
         // Exemple : Relation avec Campus
         $campus = $manager->getRepository(Campus::class)->findOneBy(['nom' => 'Angers']);
-        $sorty->setCampus($campus);
+        $sortie->setCampus($campus);
 
-       // Exemple : Relation avec Lieu
+        // Exemple : Relation avec Lieu
         $lieu = $manager->getRepository(Lieu::class)->findOneBy(['nom' => 'Palais Garnier']);
-        $sorty->setLieu($lieu);
+        $sortie->setLieu($lieu);
 
         // Exemple : Relation avec Etat
         $etat = $manager->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
-        $sorty->setEtat($etat);
+        $sortie->setEtat($etat);
 
         // Exemple : Relation avec Organisateur
-        $organisateur = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'NomDeLOrganisateur']);
-        $sorty->setOrganisateur($organisateur);
+        $organisateur = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Couplétêt']);
+        $sortie->setOrganisateur($organisateur);
 
         // Exemple : ajouter des participants à la sortie
         $participant1 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Bonriner']);
         $participant2 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Cavendish']);
-        $sorty->addParticipant($participant1);
-        $sorty->addParticipant($participant2);
+        $sortie->addParticipant($participant1);
+        $sortie->addParticipant($participant2);
 
-        $manager->persist($sorty);
+        $manager->persist($sortie);
         $manager->flush();
     }
 
+    public function getDependencies(): array
+    {
+        return [
+            VilleFixtures::class,
+            LieuFixtures::class,
+            ParticipantsFixtures::class,
+        ];
+    }
 }
