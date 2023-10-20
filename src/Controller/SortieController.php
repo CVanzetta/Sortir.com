@@ -39,6 +39,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/createSortie', name:'create_sortie')]
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
     public function createSortie(Request $request, Security $security, EntityManagerInterface $entityManager): Response
     {
         // Récupérez l'utilisateur actuellement connecté
