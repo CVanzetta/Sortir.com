@@ -71,7 +71,10 @@ class ParticipantsFixtures extends Fixture implements FixtureGroupInterface,Depe
 
     public function getDependencies()
     {
-        // TODO: Implement getDependencies() method.
+        return [
+            CampusFixtures::class,
+            LieuFixtures::class,
+        ];
     }
 }
 
