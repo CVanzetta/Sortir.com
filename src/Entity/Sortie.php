@@ -161,7 +161,7 @@ class Sortie
         return $this;
     }
 
-    public function getLieu(): Lieu
+    public function getLieu(): ?Lieu
     {
         return $this->lieu;
     }

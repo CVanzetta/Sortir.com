@@ -5,7 +5,6 @@ namespace App\DataFixtures;
 use App\Entity\Ville;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 class VilleFixtures extends Fixture
 {

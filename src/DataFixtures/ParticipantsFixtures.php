@@ -2,24 +2,26 @@
 
 namespace App\DataFixtures;
 
-use App\Service\CampusService;
+use App\Entity\Campus;
 use App\Entity\Participant;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[Groups(['kurai_d'])]
 class ParticipantsFixtures extends Fixture implements FixtureGroupInterface,DependentFixtureInterface
 {
-    private $campusService;
+    private $hasher;
 
-    public function __construct(CampusService $campusService)
+    public function __construct(UserPasswordHasherInterface $hasher)
     {
-        $this->campusService = $campusService;
+        $this->hasher = $hasher;
     }
+
     public function load(ObjectManager $manager): void
     {
 
@@ -29,9 +31,15 @@ class ParticipantsFixtures extends Fixture implements FixtureGroupInterface,Depe
         $participant1->setPrenom('Martin');
         $participant1->setTelephone('0425869378');
         $participant1->setEmail('bonriner@me.com');
-        $participant1->setMotPasse('yoyoyo');
+
+        $hashPassword = $this->hasher->hashPassword(
+            $participant1, 'yoyoyo');
+        $participant1->setMotPasse($hashPassword);
+
         $participant1->setAdministrateur(false);
-        $participant1->setCampus($this->campusService->getCampusByName('Rennes'));
+
+        $campus = $this->getReference('campus_angers');
+        $participant1->setCampus($campus);
         $participant1->setActif(true);
 
         $participant2 = new Participant();
@@ -39,9 +47,14 @@ class ParticipantsFixtures extends Fixture implements FixtureGroupInterface,Depe
         $participant2->setPrenom('Tiripou');
         $participant2->setTelephone('0404040404');
         $participant2->setEmail('Karaba@example.com');
-        $participant2->setMotPasse('yéyéyé');
+
+        $hashPassword = $this->hasher->hashPassword(
+            $participant2, 'yéyéyé');
+        $participant2->setMotPasse($hashPassword);
+
         $participant2->setAdministrateur(false);
-        $participant2->setCampus($this->campusService->getCampusByName('Angers'));
+        $campus = $this->getReference('campus_rennes');
+        $participant2->setCampus($campus);
         $participant2->setActif(true);
 
 
@@ -50,9 +63,14 @@ class ParticipantsFixtures extends Fixture implements FixtureGroupInterface,Depe
         $participant3->setPrenom('Jacob');
         $participant3->setTelephone('0678541298');
         $participant3->setEmail('cavendish.jacob@me.com');
-        $participant3->setMotPasse('Pa$$w0rd');//ajouter le hachages
+
+        $hashPassword = $this->hasher->hashPassword(
+            $participant3, 'Pa$$w0rd');
+        $participant3->setMotPasse($hashPassword);
+
         $participant3->setAdministrateur(true);
-        $participant3->setCampus($this->campusService->getCampusByName('En Ligne'));
+        $campus = $this->getReference('campus_ligne');
+        $participant3->setCampus($campus);
         $participant3->setActif(true);
 
 
@@ -69,7 +87,7 @@ class ParticipantsFixtures extends Fixture implements FixtureGroupInterface,Depe
         return ['kurai_d'];
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             CampusFixtures::class,

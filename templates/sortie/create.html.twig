@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Créer la Sortie que vous voulez Organiser</h1>
+
+    {{ form_errors(sortieForm) }}
+
+    {{ form_start(sortieForm) }}
+    {{ form_widget(sortieForm) }}
+
+    <button type="submit" class="btn">Créer cette Sortie!</button>
+    {{ form_end(sortieForm) }}
+{% endblock %}
+
+{% block title %}
+    Organiser une Sortie
+{% endblock %}
+
