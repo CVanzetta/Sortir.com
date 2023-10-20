@@ -23,11 +23,11 @@ class SortieFixtures extends Fixture
         $sorty->setInfosSortie('Ceci est une sortie de test.');
 
         // Exemple : Relation avec Campus
-        $campus = $manager->getRepository(Campus::class)->findOneBy(['nom' => 'Campus Angers']);
+        $campus = $manager->getRepository(Campus::class)->findOneBy(['nom' => 'Angers']);
         $sorty->setCampus($campus);
 
        // Exemple : Relation avec Lieu
-        $lieu = $manager->getRepository(Lieu::class)->findOneBy(['nom' => 'NomDuLieu']);
+        $lieu = $manager->getRepository(Lieu::class)->findOneBy(['nom' => 'Palais Garnier']);
         $sorty->setLieu($lieu);
 
         // Exemple : Relation avec Etat
