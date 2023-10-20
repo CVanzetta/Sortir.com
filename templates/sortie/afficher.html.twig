@@ -3,30 +3,72 @@
 {% block body %}
     <h1 class="title">Afficher une sortie</h1>
 
-    <p>Nom de la sortie : {{ sortie.getNom() }}</p>
-    <p>Date et heure de la sortie : {{ sortie.getDateHeureDebut()|date("Y-m-d H:i:s") }}</p>
-    <p>Date limite d'inscription : {{ sortie.getDateLimiteInscription()|date("Y-m-d") }}</p>
-    <p>Nombre de places : {{ sortie.getNbInscriptionsMax() }}</p>
-    <p>Durée : {{ sortie.getDuree() }} heures</p>
-    <p>Infos sortie : {{ sortie.getInfosSortie() }}</p>
+<div class="jolie">
+    <table class="info-table">
+        <tr>
+            <td>Nom de la sortie :</td>
+            <td>{{ sortie.getNom() }}</td>
+            <td>Nom du campus :</td>
+            <td>{{ sortie.getCampus().getNom() }}</td>
+        </tr>
+        <tr>
+            <td>Date et heure de la sortie :</td>
+            <td>{{ sortie.getDateHeureDebut()|date("Y-m-d H:i:s") }}</td>
+            <td>Lieu :</td>
+            <td>{{ sortie.getLieu().getNom() }}</td>
+        </tr>
+        <tr>
+            <td>Date limite d'inscription :</td>
+            <td>{{ sortie.getDateLimiteInscription()|date("Y-m-d") }}</td>
+            <td>Ville :</td>
+            <td>{{ sortie.getLieu().getVille().getNom() }}</td>
+        </tr>
+        <tr>
+            <td>Nombre de places :</td>
+            <td>{{ sortie.getNbInscriptionsMax() }}</td>
+            <td>Rue :</td>
+            <td>{{ sortie.getLieu().getRue() }}</td>
+        </tr>
+        <tr>
+            <td>Durée :</td>
+            <td>{{ sortie.getDuree() }} minutes</td>
+            <td>Code postal :</td>
+            <td>{{ sortie.getLieu().getVille.getCodePostal() }}</td>
+        </tr>
+        <tr>
+            <td>Description et infos :</td>
+            <td>{{ sortie.getInfosSortie() }}</td>
+            <td>Latitude :</td>
+            <td>{{ sortie.getLieu().getLatitude() }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Longitude :</td>
+            <td>{{ sortie.getLieu().getLongitude() }}</td>
+        </tr>
+    </table>
+</div>
 
-    <h2>Organisateur</h2>
-    <p>Nom de l'organisateur : {{ sortie.getOrganisateur().getNom() }}</p>
 
-    <h2>Lieu</h2>
-    <p>Nom du lieu : {{ sortie.getLieu().getNom() }}</p>
-    <p>Ville : {{ sortie.getLieu().getVille().getNom() }}</p>
-
-    <h2>Campus</h2>
-    <p>Nom du campus : {{ sortie.getCampus().getNom() }}</p>
-
-    <h2>État</h2>
-    <p>État de la sortie : {{ sortie.getEtat().getLibelle() }}</p> {# Utilisez getLibelle() pour accéder au libellé de l'état #}
 
     <h2>Liste des participants inscrits</h2>
-    <ul>
+    <table>
+        <thead>
+        <tr>
+            <th>Pseudo</th>
+            <th>Nom Complet</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for participant in sortie.getParticipants() %}
-            <li>{{ participant.getNom() }}</li>
+            <tr>
+                <td>{{ participant.getEmail() }}</td> {# Remplacez getEmail() par la méthode qui correspond à un pseudo unique #}
+                <td>{{ participant.getPrenom() ~ ' ' ~ participant.getNom() }}</td>
+            </tr>
         {% endfor %}
-    </ul>
+        </tbody>
+    </table>
+
+
 {% endblock %}
