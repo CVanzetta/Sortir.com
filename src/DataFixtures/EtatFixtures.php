@@ -4,7 +4,7 @@ namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use App\Entity\Etat; // Ajoutez cet import
+use App\Entity\Etat;
 
 class EtatFixtures extends Fixture
 {

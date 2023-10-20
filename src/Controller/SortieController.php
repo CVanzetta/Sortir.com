@@ -31,5 +31,6 @@ class SortieController extends AbstractController
         return $this->render('sortie/afficher.html.twig', [
             'sortie' => $sortie,
         ]);
+
     }
 }

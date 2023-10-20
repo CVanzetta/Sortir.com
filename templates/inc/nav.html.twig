@@ -1,8 +1,9 @@
 <nav>
     <ul>
         <li><a href="{{ path('main_home') }}" title="Home">Accueil</a></li>
-        <li><a href="{{ path('app_login') }}" title="se Connecter">Se Connecter</a></li>
-        <li><a href="{{ path('sInscrire') }}" title="sign up">Devenir Participant/Organisateur</a></li>
-            <!--TODO rendre inaccessible aux participants connecté-->
+{#        <li><a href="{{ path('afficher_sortie', {'id': sortieId}) }}" title="Détails de la sortie">Détails de la sortie</a></li>#}
+        <li><a href="{{ path('app_login') }}" title="Se Connecter">Se Connecter</a></li>
+        <li><a href="{{ path('sInscrire') }}" title="Devenir Participant/Organisateur">Devenir Participant/Organisateur</a></li>
+        <!-- TODO: Rendre inaccessible aux participants connectés -->
     </ul>
 </nav>

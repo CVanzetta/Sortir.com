@@ -1,11 +1,12 @@
-{# templates/sortie/afficher.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>{{ sortie.getNom() }}</h1>
+    <h1 class="title">Afficher une sortie</h1>
 
+    <p>Nom de la sortie : {{ sortie.getNom() }}</p>
     <p>Date et heure de la sortie : {{ sortie.getDateHeureDebut()|date("Y-m-d H:i:s") }}</p>
     <p>Date limite d'inscription : {{ sortie.getDateLimiteInscription()|date("Y-m-d") }}</p>
+    <p>Nombre de places : {{ sortie.getNbInscriptionsMax() }}</p>
     <p>Durée : {{ sortie.getDuree() }} heures</p>
     <p>Infos sortie : {{ sortie.getInfosSortie() }}</p>
 
@@ -20,7 +21,7 @@
     <p>Nom du campus : {{ sortie.getCampus().getNom() }}</p>
 
     <h2>État</h2>
-    <p>État de la sortie : {{ sortie.getEtat().getNom() }}</p>
+    <p>État de la sortie : {{ sortie.getEtat().getLibelle() }}</p> {# Utilisez getLibelle() pour accéder au libellé de l'état #}
 
     <h2>Liste des participants inscrits</h2>
     <ul>

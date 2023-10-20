@@ -45,3 +45,8 @@ footer {
     height:100px;
     justify-items: center;
 }
+
+.title {
+    text-align: center;
+    margin-top: 40px;
+}
