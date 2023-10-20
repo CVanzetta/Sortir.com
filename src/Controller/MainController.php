@@ -29,4 +29,9 @@ class MainController extends AbstractController
         return $this->render(view: 'main/home.html.twig');
     }
 
+    #[Route('/connexionOK', name:'main_connexionOK')]
+    public function connexionOK(): Response
+    {
+        return $this->render(view: 'main/connexionOK.html.twig');
+    }
 }
