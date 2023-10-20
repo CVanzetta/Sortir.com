@@ -6,12 +6,13 @@ use App\Service\CampusService;
 use App\Entity\Participant;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[Groups(['kurai_d'])]
-class ParticipantsFixtures extends Fixture implements FixtureGroupInterface
+class ParticipantsFixtures extends Fixture implements FixtureGroupInterface,DependentFixtureInterface
 {
     private $campusService;
 
@@ -49,7 +50,7 @@ class ParticipantsFixtures extends Fixture implements FixtureGroupInterface
         $participant3->setPrenom('Jacob');
         $participant3->setTelephone('0678541298');
         $participant3->setEmail('cavendish.jacob@me.com');
-        $participant3->setMotPasse('Pa$$w0rd');
+        $participant3->setMotPasse('Pa$$w0rd');//ajouter le hachages
         $participant3->setAdministrateur(true);
         $participant3->setCampus($this->campusService->getCampusByName('En Ligne'));
         $participant3->setActif(true);
@@ -66,6 +67,11 @@ class ParticipantsFixtures extends Fixture implements FixtureGroupInterface
     public static function getGroups(): array
     {
         return ['kurai_d'];
+    }
+
+    public function getDependencies()
+    {
+        // TODO: Implement getDependencies() method.
     }
 }
 
