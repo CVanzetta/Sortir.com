@@ -3,33 +3,51 @@
 namespace App\DataFixtures;
 
 use App\Entity\Lieu;
-use App\Entity\Ville;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class LieuFixtures extends Fixture
+class LieuFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        // Créez une instance de Lieu
-        $lieu = new Lieu();
-        $lieu->setNom('NomDuLieu');
-        $lieu->setRue('Adresse de l\'endroit');
-        $lieu->setLatitude(48.8588443); // Latitude réelle
-        $lieu->setLongitude(2.2943506); // Longitude réelle
+        // Lieu 1 : Palais Garnier, Paris
+        $lieu1 = new Lieu();
+        $lieu1->setNom('Palais Garnier');
+        $lieu1->setRue('8 Rue Scribe');
+        $lieu1->setLatitude(48.8714105);
+        $lieu1->setLongitude(2.3318376);
+        $ville1 = $this->getReference('Paris');
 
-        // Chargez la ville depuis la base de données (remplacez "Paris" par le nom de la ville souhaitée)
-        $ville = $manager->getRepository(Ville::class)->findOneBy(['nom' => 'Paris']);
-
-        if ($ville) {
-            // Associez la ville au lieu
-            $lieu->setVille($ville);
-        } else {
-            // Gérez le cas où la ville 'Paris' n'existe pas.
+        if ($ville1) {
+            $lieu1->setVille($ville1);
         }
 
-        // Persistez le lieu
-        $manager->persist($lieu);
+        $manager->persist($lieu1);
+
+        // Lieu 2 : Futuroscope, Poitiers
+        $lieu2 = new Lieu();
+        $lieu2->setNom('Futuroscope');
+        $lieu2->setRue('Avenue René Monory');
+        $lieu2->setLatitude(46.6666013);
+        $lieu2->setLongitude(0.3677685);
+
+        $ville5 = $this->getReference('Poitiers');
+
+        if ($ville5) {
+            $lieu2->setVille($ville5);
+        }
+
+        $manager->persist($lieu2);
+
         $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            VilleFixtures::class,
+        ];
     }
 }
