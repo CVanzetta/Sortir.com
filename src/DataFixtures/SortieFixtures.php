@@ -23,15 +23,15 @@ class SortieFixtures extends Fixture
         $sorty->setInfosSortie('Ceci est une sortie de test.');
 
         // Exemple : Relation avec Campus
-        $campus = $manager->getRepository(Campus::class)->findOneBy(['nom' => 'NomDuCampus']);
+        $campus = $manager->getRepository(Campus::class)->findOneBy(['nom' => 'Campus Angers']);
         $sorty->setCampus($campus);
 
-        // Exemple : Relation avec Lieu
+       // Exemple : Relation avec Lieu
         $lieu = $manager->getRepository(Lieu::class)->findOneBy(['nom' => 'NomDuLieu']);
         $sorty->setLieu($lieu);
 
         // Exemple : Relation avec Etat
-        $etat = $manager->getRepository(Etat::class)->findOneBy(['libelle' => 'NomDeLetat']);
+        $etat = $manager->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
         $sorty->setEtat($etat);
 
         // Exemple : Relation avec Organisateur
@@ -39,8 +39,8 @@ class SortieFixtures extends Fixture
         $sorty->setOrganisateur($organisateur);
 
         // Exemple : ajouter des participants à la sortie
-        $participant1 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Participant1']);
-        $participant2 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Participant2']);
+        $participant1 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Bonriner']);
+        $participant2 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Cavendish']);
         $sorty->addParticipant($participant1);
         $sorty->addParticipant($participant2);
 
