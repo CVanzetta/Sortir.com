@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Form\SortieFilterType;
 use App\Form\SortieType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -81,31 +83,14 @@ class SortieController extends AbstractController
 
     // Controller
     #[Route('/liste-sorties', name: 'liste_sorties')]
-    public function listeSorties(Request $request): Response
+    public function listeSorties(Request $request, Security $security): Response
     {
         $repository = $this->entityManager->getRepository(Sortie::class);
 
-        $form = $this->createFormBuilder()
-            ->add('campus', ChoiceType::class, [
-                'choices' => $this->getCampusList(),
-                'label' => 'Campus',
-                'required' => false,
-            ])
-            ->add('dateDebut', DateType::class, [
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-            ->add('dateFin', DateType::class, [
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-            ->add('keyword', TextType::class, [
-                'label' => 'Mot-clé',
-                'required' => false,
-            ])
-            ->add('search', SubmitType::class, ['label' => 'Rechercher'])
-            ->getForm();
-
+        // Créez et gérez le formulaire
+        $form = $this->createForm(SortieFilterType::class, null, [
+            'campus_choices' => $this->getCampusList(),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -128,6 +113,22 @@ class SortieController extends AbstractController
                 $criteria['nom'] = $data['keyword'];
             }
 
+            if ($data['organisateur']) {
+                $criteria['organisateur'] = $security->getUser();
+            }
+
+            if ($data['inscrit']) {
+                $criteria['participants'] = $security->getUser();
+            }
+
+            if ($data['nonInscrit']) {
+                $criteria['participants'] = null;
+            }
+
+            if ($data['passees']) {
+                $criteria['dateHeureDebut'] = new \DateTime('now');
+            }
+
             $sorties = $repository->findBy($criteria);
 
             if (empty($sorties)) {
@@ -140,7 +141,6 @@ class SortieController extends AbstractController
         return $this->render('sortie/liste_sorties.html.twig', [
             'form' => $form->createView(),
             'sorties' => $sorties,
-
         ]);
     }
 
