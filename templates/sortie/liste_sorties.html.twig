@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Sorties{% endblock %}
+
+{% block body %}
+    <h1>Liste des Sorties</h1>
+
+    {# Formulaire de filtres #}
+    <form method="get" action="{{ path('liste_sorties') }}">
+        <label for="campus">Campus :</label>
+        <select name="campus" id="campus">
+            <option value="">Tous les campus</option>
+{#            {% for key, value in campusList %}#}
+{#                <option value="{{ value }}">{{ key }}</option>#}
+{#            {% endfor %}#}
+        </select>
+
+        <label for="dateDebut">Date de début :</label>
+        <input type="date" name="dateDebut" id="dateDebut">
+
+        <label for="dateFin">Date de fin :</label>
+        <input type="date" name="dateFin" id="dateFin">
+
+        <label for="keyword">Mot-clé :</label>
+        <input type="text" name="keyword" id="keyword">
+
+        <button type="submit">Filtrer</button>
+    </form>
+
+    {# Liste des sorties filtrées #}
+    <table>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Date de début</th>
+            <th>Organisateur</th>
+            <th>Participants</th>
+            <th>État</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for sortie in sorties %}
+            <tr>
+                <td>{{ sortie.nom }}</td>
+                <td>{{ sortie.dateHeureDebut|date("Y-m-d H:i") }}</td>
+                <td>{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</td>
+                <td>
+                    {% for participant in sortie.participants %}
+                        {{ participant.prenom }} {{ participant.nom }}<br>
+                    {% endfor %}
+                </td>
+                <td>{{ sortie.etat.libelle }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {# Barre de défilement si nécessaire #}
+    <div style="overflow: auto; max-height: 400px;">
+        {# Affichez la liste des sorties ici #}
+    </div>
+    </body>
+{% endblock %}
