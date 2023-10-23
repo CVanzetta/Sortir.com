@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -27,9 +28,14 @@ class SortieType extends AbstractType
             ])
             ->add('dateHeureDebut', DateTimeType::class, [
                 'label' => 'Date et Heure de début',
-                ])
-            ->add('duree', IntegerType::class, [
+                'date_widget'=>'single_text',
+                'time_widget'=>'single_text',
+                'attr' => ['class' => 'custom-input',
+                            'class' => 'custom-time-input']
+            ])
+            ->add('duree', TimeType::class, [
             'label' => 'Durée (en heures et minutes)',
+                'attr' => ['class' => 'duree-input']
             ])
             ->add('dateLimiteInscription', DateType::class, [
                 'label' => "Date limite d'inscription",

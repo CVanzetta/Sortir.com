@@ -1,12 +1,39 @@
 {% extends 'base.html.twig' %}
+{% block extrastyles %}
+    <style>
+        label{
+            display: block;
+        }
+        input, textarea, select{
+            width: 150px;
+            max-width: 50%;
+            border-radius: 6px;
+            border-color: dimgrey;
+            margin-bottom: 4px;
+        }
+        input#sortie_dateHeureDebut_time {
 
+            width: 100px; /* Ajustez la largeur en fonction de vos besoins */
+            border-radius: 6px;
+            border-color: dimgrey;
+            margin-bottom: 4px;
+            display: inline-block; /* Cela permettra de les aligner horizontalement */
+        }
+        .duree-input{
+            width: 80px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+{% endblock %}
 {% block body %}
-    <h1>Créer la Sortie que vous voulez Organiser</h1>
+    <h1>Créer la sortie que vous voulez organiser</h1>
 
     {{ form_errors(sortieForm) }}
 
     {{ form_start(sortieForm) }}
-    {{ form_widget(sortieForm) }}
+    {{ form_widget(sortieForm) }} {# afficher tout mes champs d'un coup #}
+
 
     <button type="submit" class="btn">Créer cette Sortie!</button>
     {{ form_end(sortieForm) }}
