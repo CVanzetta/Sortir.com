@@ -1,0 +1,22 @@
+{%  extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Profil de {{ app.user.email }} :</h1><br />
+
+    {% if app.user %}
+    <ul>
+        <li>Email : {{ app.user.email }}</li>
+        <li>Nom : {{ app.user.nom }}</li>
+        <li>Prénom : {{ app.user.prenom }}</li>
+        <li>Téléphone : {{ app.user.telephone }}</li><br />
+        <div>
+            <button class="btn"><a href="{{ path('profil_modifierProfil') }}">Modifier votre profil</a></button>
+            <button class="btn"><a href="#">Modifier votre mot de passe</a></button>
+        </div>
+        {%  endif %}
+    </ul>
+{% endblock %}
+
+{% block title %}
+    Sortir.com
+{% endblock %}
