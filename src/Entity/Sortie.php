@@ -208,4 +208,9 @@ class Sortie
 
         return $this;
     }
+    public function hasAvailableSpots(): bool
+    {
+        return count($this->getParticipants()) < $this->getNbInscriptionsMax();
+    }
+
 }

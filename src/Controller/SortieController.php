@@ -5,11 +5,6 @@ namespace App\Controller;
 use App\Form\SortieFilterType;
 use App\Form\SortieType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,8 +13,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Campus;
+
 
 
 
@@ -50,19 +45,16 @@ class SortieController extends AbstractController
     }
 
     #[Route('/createSortie', name:'create_sortie')]
-    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
-    public function createSortie(Request $request, Security $security, EntityManagerInterface $entityManager): Response
+
+    public function createSortie(Request $request,EntityManagerInterface $entityManager): Response
     {
-        // Vérifiez si l'utilisateur est autorisé à créer une sortie (ajoutez des contrôles d'accès si nécessaire).
-        if (!$this->authorizationChecker->isGranted('ROLE_USER')) {
-            throw $this->createAccessDeniedException('Accès refusé');
-        }
+        $participant = $this->getUser();
 
         // Créez une nouvelle instance de Sortie
         $sortie = new Sortie();
 
         // Attribuez l'utilisateur actuel comme organisateur de la sortie
-        $sortie->setOrganisateur($user);
+        $sortie->setOrganisateur($participant);
 
         // Créez et gérez le formulaire, persistez la sortie, etc.
         $sortieForm = $this->createForm(SortieType::class, $sortie);
@@ -79,6 +71,37 @@ class SortieController extends AbstractController
         return $this->render('sortie/create.html.twig', [
             'sortieForm' => $sortieForm->createView(),
         ]);
+    }
+    #[Route('/inscription/{id}', name:'inscription_sortie')]
+
+    public function inscrireSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie, UserInterface $participant): Response
+    {
+        $user = $this->getUser(); // Récupérer l'utilisateur connecté
+
+        // Vérifiez si le participant est déjà inscrit à cette sortie
+        if (!$sortie->getParticipants()->contains($participant)) {
+            // Vérifiez si la date limite d'inscription est dépassée
+            $dateLimiteInscription = $sortie->getDateLimiteInscription();
+            $now = new \DateTime();
+            if ($dateLimiteInscription >= $now) {
+
+                // Le participant peut s'inscrire
+                $sortie->addParticipant($participant);
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Vous avez bien été inscrit à cette sortie.');
+
+            } else {
+                // La date limite d'inscription est dépassée, renvoyez un message d'erreur
+                $this->addFlash('error', 'La date limite d\'inscription est dépassée.');
+            }
+        } else {
+            // Le participant est déjà inscrit, renvoyez un message d'erreur
+            $this->addFlash('error', 'Vous êtes déjà inscrit à cette sortie.');
+        }
+
+        return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
     }
 
     // Controller

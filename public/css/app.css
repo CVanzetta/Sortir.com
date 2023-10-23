@@ -80,3 +80,17 @@ footer {
     cursor: pointer;
     margin: 3px;
 }
+
+.flash {
+    padding: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+.flash-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
