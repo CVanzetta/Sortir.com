@@ -86,6 +86,7 @@ class ParticipantsFixtures extends Fixture implements FixtureGroupInterface,Depe
 
         $participant4->setAdministrateur(false);
 
+
         $campus = $this->getReference('campus_nantes');
         $participant4->setCampus($campus);
         $participant4->setActif(true);

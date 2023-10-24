@@ -19,6 +19,7 @@ class EtatFixtures extends Fixture
             ['libelle' => 'Annulée'],
         ];
 
+
         foreach ($etatsData as $etatData) {
             $etat = new Etat();
             $etat->setLibelle($etatData['libelle']);

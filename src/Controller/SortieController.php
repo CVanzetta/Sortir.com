@@ -40,6 +40,7 @@ class SortieController extends AbstractController
             throw $this->createNotFoundException('La sortie avec l\'ID ' . $id . ' n\'existe pas.');
         }
 
+
         return $this->render('sortie/afficher.html.twig', [
             'sortie' => $sortie,
         ]);

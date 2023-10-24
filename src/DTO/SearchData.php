@@ -9,6 +9,7 @@ private $dateDebut;
 private $dateFin;
 private $keyword;
 private $organisateur;
+
 private $inscrit;
 private $nonInscrit;
 private $passees;
