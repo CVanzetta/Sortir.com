@@ -19,8 +19,9 @@
 
         {% block extrastyles %}{% endblock %}
     </head>
-    {% include('inc/nav.html.twig') %}
-
+    {% block content %}
+        {% include('inc/nav.html.twig') %}
+    {% endblock %}
     <body>
     {% for label, messages in app.flashes %}
         {% for message in messages %}

@@ -37,6 +37,8 @@ class EtatsController extends AbstractController
             $etat6 = new Etat();
             $etat6->setLibelle("Annulée");
 
+            $etat7 = new Etat();
+            $etat7->setLibelle("Archivée");
             // Enregistrez dans la base de données
             $entityManager->persist($etat1);
             $entityManager->persist($etat2);
@@ -44,6 +46,7 @@ class EtatsController extends AbstractController
             $entityManager->persist($etat4);
             $entityManager->persist($etat5);
             $entityManager->persist($etat6);
+            $entityManager->persist($etat7);
             $entityManager->flush();
         }
         return $this->redirectToRoute('main_home');

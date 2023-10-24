@@ -34,6 +34,8 @@ class Sortie
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infosSortie = null;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $dateAnnulee = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
@@ -213,4 +215,14 @@ class Sortie
         return count($this->getParticipants()) < $this->getNbInscriptionsMax();
     }
 
+    public function getDateAnnulee(): ?\DateTimeInterface
+    {
+        return $this->dateAnnulee;
+    }
+    public function setDateAnnulee(\DateTimeInterface $dateAnnulee): static
+    {
+        $this->dateAnnulee = $dateAnnulee;
+
+        return $this;
+    }
 }

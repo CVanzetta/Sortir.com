@@ -1,12 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Se Connecter!{% endblock %}
-
+{% block content %}
+    <h1>Bienvenue sur le site Sortir.com</h1>
+{% endblock %}
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+<form method="post" action="{{ path('app_login') }}">
 
     {% if app.user %}
         <div class="mb-3">
@@ -15,8 +14,9 @@
     {% endif %}
 
     <h1 class="h3 mb-3 font-weight-normal">Connecter vous !</h1>
+
     <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="mail" required autofocus>
+    <input type="email" name="email" id="inputEmail" class="form-control" autocomplete="mail" required autofocus>
     <label for="inputPassword">Password</label>
     <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
 
