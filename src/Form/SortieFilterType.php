@@ -1,10 +1,9 @@
 <?php
-// src/Form/SortieFilterType.php
-
-// src/Form/SortieFilterType.php
 
 namespace App\Form;
 
+use App\Entity\Campus;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -18,22 +17,35 @@ class SortieFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('campus', ChoiceType::class, [
-                'choices' => $options['campus_choices'],
+            ->add('campus', EntityType::class, [
+                'class' => Campus::class,
                 'label' => 'Campus',
+                'choice_label' => 'nom',
                 'required' => false,
+                'placeholder' => 'Sélectionner un campus',
             ])
             ->add('dateDebut', DateType::class, [
                 'widget' => 'single_text',
                 'required' => false,
+                'label' => 'Date de début',
+                'attr' => [
+                    'placeholder' => 'Date de début',
+                ],
             ])
             ->add('dateFin', DateType::class, [
                 'widget' => 'single_text',
                 'required' => false,
+                'label' => 'Date de fin',
+                'attr' => [
+                    'placeholder' => 'Date de fin',
+                ],
             ])
             ->add('keyword', TextType::class, [
-                'label' => 'Mot-clé',
+                'label' => 'Rechercher',
                 'required' => false,
+                'attr' => [
+                    'placeholder' => 'Rechercher',
+                ],
             ])
             ->add('organisateur', CheckboxType::class, [
                 'label' => 'Sorties dont je suis l\'organisateur',
@@ -57,7 +69,6 @@ class SortieFilterType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => null,
-            'campus_choices' => [],
         ]);
     }
 }

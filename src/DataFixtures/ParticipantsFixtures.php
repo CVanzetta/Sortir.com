@@ -74,10 +74,46 @@ class ParticipantsFixtures extends Fixture implements FixtureGroupInterface,Depe
         $participant3->setActif(true);
 
 
+        $participant4 = new Participant();
+        $participant4->setNom('Doe');
+        $participant4->setPrenom('John');
+        $participant4->setTelephone('1234567890');
+        $participant4->setEmail('johndoe@example.com');
+
+        $hashPassword = $this->hasher->hashPassword(
+            $participant4, 'password123');
+        $participant4->setMotPasse($hashPassword);
+
+        $participant4->setAdministrateur(false);
+
+        $campus = $this->getReference('campus_nantes');
+        $participant4->setCampus($campus);
+        $participant4->setActif(true);
+
+        $participant5 = new Participant();
+        $participant5->setNom('Parker');
+        $participant5->setPrenom('Peter');
+        $participant5->setTelephone('9876543210');
+        $participant5->setEmail('spidey@example.com');
+
+        $hashPassword = $this->hasher->hashPassword(
+            $participant5, 'webcrawler');
+        $participant5->setMotPasse($hashPassword);
+
+        $participant5->setAdministrateur(false);
+
+        $campus = $this->getReference('campus_angers');
+        $participant5->setCampus($campus);
+        $participant5->setActif(true);
+
+
+
         // Enregistrez les données dans la base de données
         $manager->persist($participant1);
         $manager->persist($participant2);
         $manager->persist($participant3);
+        $manager->persist($participant4);
+        $manager->persist($participant5);
 
         // Exécutez la requête pour insérer les données dans la base de données
         $manager->flush();

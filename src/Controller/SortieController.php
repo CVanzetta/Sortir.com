@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\DTO\SearchData;
 use App\Form\SortieFilterType;
 use App\Form\SortieType;
+use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -104,61 +106,59 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
     }
 
-    // Controller
     #[Route('/liste-sorties', name: 'liste_sorties')]
-    public function listeSorties(Request $request, Security $security): Response
+    public function listeSorties(Request $request, Security $security, SortieRepository $sortieRepository): Response
     {
-        $repository = $this->entityManager->getRepository(Sortie::class);
+        //var_dump($request->query->all());
 
-        // Créez et gérez le formulaire
-        $form = $this->createForm(SortieFilterType::class, null, [
-            'campus_choices' => $this->getCampusList(),
-        ]);
+        // Récupérez les données du formulaire
+        $form = $this->createForm(SortieFilterType::class);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $criteria = [];
+
+            $searchData = new SearchData(); // Créez une instance de SearchData
 
             if ($data['campus']) {
-                $criteria['campus'] = $data['campus'];
+                $searchData->setCampus($data['campus']->getId()); // Utilisez l'ID du campus
             }
 
             if ($data['dateDebut']) {
-                $criteria['dateHeureDebut'] = $data['dateDebut'];
+                $searchData->setDateDebut($data['dateDebut']);
             }
 
             if ($data['dateFin']) {
-                $criteria['dateHeureFin'] = $data['dateFin'];
+                $searchData->setDateFin($data['dateFin']);
             }
 
             if ($data['keyword']) {
-                $criteria['nom'] = $data['keyword'];
+                $searchData->setKeyword($data['keyword']);
             }
 
             if ($data['organisateur']) {
-                $criteria['organisateur'] = $security->getUser();
+                $searchData->setOrganisateur($security->getUser());
             }
 
             if ($data['inscrit']) {
-                $criteria['participants'] = $security->getUser();
+                $searchData->setInscrit($security->getUser());
             }
 
             if ($data['nonInscrit']) {
-                $criteria['participants'] = null;
+                $searchData->setNonInscrit(true);
             }
 
             if ($data['passees']) {
-                $criteria['dateHeureDebut'] = new \DateTime('now');
+                $searchData->setPassees(true);
             }
 
-            $sorties = $repository->findBy($criteria);
+            // Récupérez les sorties en utilisant le repository
+            $sorties = $sortieRepository->findSearch($searchData);
 
             if (empty($sorties)) {
                 $this->addFlash('info', 'Aucun résultat trouvé.');
             }
         } else {
-            $sorties = $repository->findAll();
+            $sorties = $sortieRepository->findAll();
         }
 
         return $this->render('sortie/liste_sorties.html.twig', [
@@ -167,17 +167,4 @@ class SortieController extends AbstractController
         ]);
     }
 
-    private function getCampusList()
-    {
-        $campusRepository = $this->entityManager->getRepository(Campus::class);
-        $campusList = $campusRepository->findAll();
-
-        $choices = [];
-
-        foreach ($campusList as $campus) {
-            $choices[$campus->getNom()] = $campus->getId();
-        }
-
-        return $choices;
-    }
 }

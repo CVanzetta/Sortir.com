@@ -46,6 +46,25 @@ class VilleFixtures extends Fixture
         $manager->persist($ville6);
         $this->addReference('Nantes', $ville6);
 
+        $ville7 = new Ville();
+        $ville7->setNom('Le Mont-Saint-Michel');
+        $ville7->setCodePostal('50170');
+        $manager->persist($ville7);
+        $this->addReference('Le Mont-Saint-Michel', $ville7);
+
+        $ville8 = new Ville();
+        $ville8->setNom('Chambord');
+        $ville8->setCodePostal('41250');
+        $manager->persist($ville8);
+        $this->addReference('Chambord', $ville8);
+
+        $ville9 = new Ville();
+        $ville9->setNom('Les Epesses');
+        $ville9->setCodePostal('85590');
+        $manager->persist($ville9);
+        $this->addReference('Les Epesses', $ville9);
+
+
         $manager->flush();
     }
 }
