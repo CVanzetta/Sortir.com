@@ -25,13 +25,15 @@ class MainController extends AbstractController
         $etatsController->addEtats($this->entityManager);
         $campusController->addCampus($this->entityManager);
 
-
-        return $this->render(view: 'main/home.html.twig');
+        if ($this->isGranted('IS_AUTHENTICATED')){
+            return $this->render(view: 'main/home.html.twig');
+        } else {
+        return $this->render(view: 'security/login.html.twig');
+        }
     }
-
     #[Route('/connexionOK', name:'main_connexionOK')]
     public function connexionOK(): Response
     {
-        return $this->render(view: 'main/connexionOK.html.twig');
+        return $this->render(view: 'main/home.html.twig');
     }
 }
