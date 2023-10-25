@@ -3,6 +3,10 @@
 {% block title %}Liste des Sorties{% endblock %}
 
 {% block body %}
+    {% if app.user %}
+        {% set utilisateur = app.user %}
+    {% endif %}
+
     <h2>Filtrer les sorties</h2>
 
     {# Formulaire de filtres #}
@@ -49,7 +53,13 @@
                                 <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
                                 <td>{{ sortie.participants|length }} / {{ sortie.nbInscriptionsMax }}</td>
                                 <td>{{ sortie.etat.libelle }}</td>
-                                <td>{{ sortie.participants ? 'X' : '' }}</td>
+                                <td>
+                                    {% if sortie.participants.contains(utilisateur) %}
+                                        X
+                                    {% else %}
+                                        <!-- L'utilisateur ne participe pas à cette sortie -->
+                                    {% endif %}
+                                </td>
                                 <td>{{ sortie.organisateur.nom }}</td>
                                 <td>
                                     <a href="{{ path('afficher_sortie', {'id': sortie.id}) }}" class="btn btn-primary">Afficher</a>
