@@ -10,8 +10,8 @@
         <li>Prénom : {{ app.user.prenom }}</li>
         <li>Téléphone : {{ app.user.telephone }}</li><br />
         <div>
-            <button class="btn"><a href="{{ path('profil_modifierProfil') }}">Modifier votre profil</a></button>
-            <button class="btn"><a href="#">Modifier votre mot de passe</a></button>
+            <button class="btn"><a href="{{ path('profil_modifierProfil') }}">Enregistrer</a></button>
+            <button class="btn"><a href="{{ path('main_home') }}">Annuler</a></button>
         </div>
         {%  endif %}
     </ul>

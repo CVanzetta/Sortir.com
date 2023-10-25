@@ -175,6 +175,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
     public function getMotPasse(): ?string
     {
         return $this->motPasse;
