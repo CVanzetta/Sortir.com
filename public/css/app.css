@@ -112,3 +112,39 @@ footer {
     margin-left: 10px;
     float: left;
 }
+
+.column-nom {
+    width: 30%;
+}
+
+.column-date {
+    width: 15%;
+}
+
+.column-cloture {
+    width: 10%;
+}
+
+.column-inscrits-places {
+    width: 10%;
+}
+
+.column-etat {
+    width: 10%;
+}
+
+.column-inscrit {
+    width: 10%;
+}
+
+.column-organisateur {
+    width: 15%;
+}
+
+.column-actions {
+    width: 10%;
+}
+
+.table {
+    line-height: 3.5;
+}

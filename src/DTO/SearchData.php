@@ -9,7 +9,6 @@ private $dateDebut;
 private $dateFin;
 private $keyword;
 private $organisateur;
-
 private $inscrit;
 private $nonInscrit;
 private $passees;
@@ -19,7 +18,7 @@ public function getCampus()
 return $this->campus;
 }
 
-public function setCampus($campus)
+public function setCampus($campus):void
 {
 $this->campus = $campus;
 }

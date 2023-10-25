@@ -27,7 +27,7 @@ class SortieFilterType extends AbstractType
             ->add('dateDebut', DateType::class, [
                 'widget' => 'single_text',
                 'required' => false,
-                'label' => 'Date de début',
+                'label' => 'Entre ',
                 'attr' => [
                     'placeholder' => 'Date de début',
                 ],
@@ -35,7 +35,7 @@ class SortieFilterType extends AbstractType
             ->add('dateFin', DateType::class, [
                 'widget' => 'single_text',
                 'required' => false,
-                'label' => 'Date de fin',
+                'label' => 'Et ',
                 'attr' => [
                     'placeholder' => 'Date de fin',
                 ],
