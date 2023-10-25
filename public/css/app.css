@@ -113,6 +113,26 @@ footer {
     float: left;
 }
 
+.profil {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.hProfil {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: 300px;
+}
+
+.formProfil {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: 300px;
+}
+
 .column-nom {
     width: 30%;
 }

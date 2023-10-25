@@ -1,9 +1,14 @@
 {%  extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Mon profil :</h1><br />
-
+    <div class="profil">
+    <div class="hProfil"><h1>Mon profil :</h1><br /></div>
+    <div class="formProfil">
     {{ form(EditProfil) }}
+    </div>
+    </div>
+
+    <a href="{{ path('profil_afficherProfil', {'id': app.user.id}) }}" title="afficher profil">{{ app.user.prenom }}</a>
 
 {% endblock %}
 

@@ -1,0 +1,18 @@
+{%  extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="profil">
+        <div class="hProfil"><h1>{{ participant.prenom }} {{ participant.nom }}</h1><br /></div>
+        <div class="formProfil">
+            <p>Prénom : {{ participant.prenom }}</p>
+            <p>Nom : {{ participant.nom }}</p>
+            <p>Téléphone : {{ participant.telephone }}</p>
+            <p>Email : {{ participant.email }}</p>
+            <p>Campus : {{ campus.nom }}</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block title %}
+    {{ participant.prenom }} {{ participant.nom }} - Sortir.com
+{% endblock %}
