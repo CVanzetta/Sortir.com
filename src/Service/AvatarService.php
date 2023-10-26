@@ -72,20 +72,18 @@ class AvatarService
         return $fichier;
     }
 
-    public function delete(string $fichier): bool
+    public function delete(?string $fichier)
     {
-        if($fichier !== 'default.webp'){
+        if($fichier != 'default.webp') {
             $success = false;
             $path = $this->params->get('images_directory');
-            $avatar = $path . '/' . $fichier;
-
-            if(file_exists($avatar)){
-                unlink($avatar);
-                $success = true;
-            }
-            return $success;
+            //$original = $path . '/' . $fichier;
         }
-        return false;
+        else {
+                unlink($fichier);
+                $success = true;
+        }
+        return $success;
     }
 
 }
