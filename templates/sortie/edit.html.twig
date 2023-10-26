@@ -1,28 +1,30 @@
 {% extends 'base.html.twig' %}
 {% block javascripts %}
-<script src="{{ asset('js/sortieType.js') }}"></script>
+    <script src="{{ asset('js/sortieType.js') }}"></script>
 {% endblock %}
 {% block extrastyles %}
     <style>
-        label{
+        label {
             display: block;
         }
-        input, textarea, select{
+
+        input, textarea, select {
             width: 150px;
             max-width: 50%;
             border-radius: 6px;
             border-color: dimgrey;
             margin-bottom: 4px;
         }
-        input#sortie_dateHeureDebut_time {
 
-            width: 100px; /* Ajustez la largeur en fonction de vos besoins */
+        input#sortie_dateHeureDebut_time {
+            width: 100px;
             border-radius: 6px;
             border-color: dimgrey;
             margin-bottom: 4px;
-            display: inline-block; /* Cela permettra de les aligner horizontalement */
+            display: inline-block;
         }
-        .duree-input{
+
+        .duree-input {
             width: 80px;
             display: flex;
             justify-content: space-between;
@@ -30,18 +32,19 @@
     </style>
 {% endblock %}
 {% block body %}
-    <h1>Créer une sortie</h1>
+    <h1>Modifier la sortie</h1>
 
     {{ form_errors(sortieForm) }}
 
     {{ form_start(sortieForm) }}
-    {{ form_widget(sortieForm) }} {# afficher tout mes champs d'un coup #}
-
+    {{ form_widget(sortieForm) }}
     <button type="submit" id="save" class="btn">Enregistrer</button>
-    <button type="submit" id="publish" class="btn">Publier la Sortie</button>
+    <button type="submit" id="update" class="btn">Publier la Sortie</button>
+    <button type="submit" id="delete" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette sortie ?');">Supprimer la sortie</button><a href="{{ path('supprimer_sortie', {'id': sortie.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette sortie ?');">Supprimer</a>
     <a href="{{ path('main_home') }}" class="btn" id="cancel">Annuler</a>
     {{ form_end(sortieForm) }}
+
 {% endblock %}
 {% block title %}
-    Creer une Sortie
+    Modifier une Sortie
 {% endblock %}

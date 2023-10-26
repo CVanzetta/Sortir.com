@@ -70,7 +70,8 @@
                                             {% endif %}
                                         {% elseif sortie.etat.libelle == 'Ouverte' %}
                                             {% if app.user == sortie.organisateur %}
-                                                <!-- Vous êtes l'organisateur, ne montrez rien ici -->
+
+                                                <!-- TODO: pour l'organisateur, ajouter le liens a la page annuler -->
                                             {% elseif app.user in sortie.participants %}
                                                 <a href="{{ path('desinscription_sortie', {'id': sortie.id}) }}" class="btn btn-danger">Se désister</a>
                                             {% else%}

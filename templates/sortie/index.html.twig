@@ -18,3 +18,4 @@
     </ul>
 </div>
 {% endblock %}
+<a href="{{ path('supprimer_sortie', {'id': sortie.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette sortie ?');">Supprimer</a>

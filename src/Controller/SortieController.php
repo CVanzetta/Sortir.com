@@ -45,9 +45,8 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/createSortie', name:'create_sortie')]
-
-    public function createSortie(Request $request,EntityManagerInterface $entityManager): Response
+    #[Route('/createSortie', name: 'create_sortie')]
+    public function createSortie(Request $request, EntityManagerInterface $entityManager): Response
     {
         $participant = $this->getUser();
 
@@ -61,54 +60,15 @@ class SortieController extends AbstractController
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
+        $etat = 'Créée';
+
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            $nbParticipants = $sortie->getParticipants()->count();
-            $nbInscriptionsMax = $sortie->getNbInscriptionsMax();
-            $dateActuelle = new \DateTime();
-            $dateLimiteInscription = $sortie->getDateLimiteInscription();
-            $dateActivite = $sortie->getDateHeureDebut();
-            $dateArchivation = clone $dateActivite;
-            $dateArchivation->modify('+1 month');
-            $dateArchiveAnnul =$sortie->getDateAnnulee();
-
-            if ($dateArchiveAnnul !== null) {
-                $dateArchiveAnnul->modify('+1 month');
-            }
-
-            $conditions = [
-                [
-                    'condition' => $nbParticipants < $nbInscriptionsMax && $dateActuelle < $dateLimiteInscription,
-                    'etat' => 'Ouverte',
-                ],
-                [
-                    'condition' => $nbParticipants == $nbInscriptionsMax,
-                    'etat' => 'Clôturée',
-                ],
-                [
-                    'condition' => $dateActuelle == $dateActivite,
-                    'etat' => 'Activité en Cours',
-                ],
-                [
-                    'condition' => $dateActuelle > $dateActivite,
-                    'etat' => 'Passée',
-                ],
-                [
-                    'condition' => $dateActuelle == $dateArchivation || $dateActuelle == $dateArchiveAnnul,
-                    'etat' => 'Archivée',
-                ],
-                [
-                    'condition' => $sortie->getDateAnnulee() !== null && $dateActuelle->format('Y-m-d H:i:s') === $sortie->getDateAnnulee()->format('Y-m-d H:i:s'),
-                    'etat' => 'Annulée',
-                ],
-            ];
-
-            $etat = 'Créée'; // État par défaut
-
-            foreach ($conditions as $condition) {
-                if ($condition['condition']) {
-                    $etat = $condition['etat'];
-                    break; // Sortie du boucle dès qu'une condition est remplie
-                }
+            if ($request->request->has('save')) {
+                // Bouton "Enregistrer" a été cliqué
+                $etat = 'Créée';
+            } elseif ($request->request->has('publish')) {
+                // Bouton "Publier" a été cliqué
+                $etat = 'Ouverte';
             }
 
 // Maintenant, $etat contient l'état correspondant à la première condition remplie
@@ -194,8 +154,8 @@ class SortieController extends AbstractController
             'sorties' => $sorties,
         ]);
     }
-    #[Route('/inscription/{id}', name:'inscription_sortie')]
 
+    #[Route('/inscription/{id}', name: 'inscription_sortie')]
     public function inscrireSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie, UserInterface $participant): Response
     {
         $user = $this->getUser(); // Récupérer l'utilisateur connecté
@@ -227,24 +187,139 @@ class SortieController extends AbstractController
     }
 
     #[Route('/desinscription/{id}', name: 'desinscription_sortie')]
-public function desinscrireSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie, UserInterface $participant): Response
-{
-    $user = $this->getUser(); // Récupérez l'utilisateur connecté
+    public function desinscrireSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie, UserInterface $participant): Response
+    {
+        $user = $this->getUser(); // Récupérez l'utilisateur connecté
 
-    // Vérifiez si le participant est inscrit à cette sortie
-    if ($sortie->getParticipants()->contains($participant)) {
-        // Le participant est inscrit, il peut se désinscrire
-        $sortie->removeParticipant($participant);
+        // Vérifiez si le participant est inscrit à cette sortie
+        if ($sortie->getParticipants()->contains($participant)) {
+            // Le participant est inscrit, il peut se désinscrire
+            $sortie->removeParticipant($participant);
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Vous avez bien été désinscrit de cette sortie.');
+        } else {
+            // Le participant n'est pas inscrit, renvoyez un message d'erreur
+            $this->addFlash('error', 'Vous n\'êtes pas inscrit à cette sortie.');
+        }
+
+        return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
+    }
+
+    #[Route('/deleteSortie/{id}', name: 'supprimer_sortie')]
+    public function deleteSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie): Response
+    {
+        $entityManager->remove($sortie);
+        $entityManager->flush();
+        return $this->redirectToRoute('main_home');
+    }
+
+    #[Route('/editSortie/{id}', name: 'modifier_sortie')]
+    public function editSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie): Response
+    {
+        // Créez et gérez le formulaire de modification de la sortie
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($request->request->has('save')) {
+                // Bouton "Enregistrer" a été cliqué
+                $etat = 'Créée';
+            } elseif ($request->request->has('update')) {
+                // Bouton "Publier" a été cliqué
+                $etat = 'Ouverte';
+            } elseif ($request->request->has('delete')) {
+                // Bouton "Supprimer" a été cliqué
+                $etat = 'Annulée';
+            }
+            // Enregistrez les modifications dans la base de données
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            // Redirigez l'utilisateur vers la page d'affichage de la sortie modifiée
+            return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
+        }
+
+        return $this->render('sortie/edit.html.twig', [
+            'sortieForm' => $form->createView(),
+            'sortie' => $sortie,
+        ]);
+    }
+
+    #[Route('/updateSortie/{id}', name: 'publier_sortie')]
+    public function updateSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie): Response
+    {
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+
+        // Modifiez l'état de la sortie pour la publier (si toutes les conditions sont remplies)
+        $sortie->setEtat('Ouverte');
+
+        if ($form->isSubmitted() && $form->isValid()) {
+        // Enregistrez les modifications dans la base de données
         $entityManager->persist($sortie);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Vous avez bien été désinscrit de cette sortie.');
-    } else {
-        // Le participant n'est pas inscrit, renvoyez un message d'erreur
-        $this->addFlash('error', 'Vous n\'êtes pas inscrit à cette sortie.');
+        // Redirigez l'utilisateur vers la page d'affichage de la sortie publiée
+        return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
+    }
+        return $this->render('sortie/edit.html.twig', [
+            'sortieForm' => $form->createView(),
+            'sortie' => $sortie,]);
     }
 
-    return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
-}
 
+   /* public function etatSortie(Sortie $sortie): string
+    {
+        $nbParticipants = $sortie->getParticipants()->count();
+        $nbInscriptionsMax = $sortie->getNbInscriptionsMax();
+        $dateActuelle = new \DateTime();
+        $dateLimiteInscription = $sortie->getDateLimiteInscription();
+        $dateActivite = $sortie->getDateHeureDebut();
+        $dateArchivation = clone $dateActivite;
+        $dateArchivation->modify('+1 month');
+        $dateArchiveAnnul = $sortie->getDateAnnulee();
+
+        if ($dateArchiveAnnul !== null) {
+            $dateArchiveAnnul->modify('+1 month');
+        }
+
+        $conditions = [
+            [
+                'condition' => $nbParticipants < $nbInscriptionsMax && $dateActuelle < $dateLimiteInscription,
+                'etat' => 'Ouverte',
+            ],
+            [
+                'condition' => $nbParticipants == $nbInscriptionsMax,
+                'etat' => 'Clôturée',
+            ],
+            [
+                'condition' => $dateActuelle == $dateActivite,
+                'etat' => 'Activité en Cours',
+            ],
+            [
+                'condition' => $dateActuelle > $dateActivite,
+                'etat' => 'Passée',
+            ],
+            [
+                'condition' => $dateActuelle == $dateArchivation || $dateActuelle == $dateArchiveAnnul,
+                'etat' => 'Archivée',
+            ],
+            [
+                'condition' => $sortie->getDateAnnulee() !== null && $dateActuelle->format('Y-m-d H:i:s') === $sortie->getDateAnnulee()->format('Y-m-d H:i:s'),
+                'etat' => 'Annulée',
+            ],
+        ];
+
+        $etat = 'Créée'; // État par défaut
+
+        foreach ($conditions as $condition) {
+            if ($condition['condition']) {
+                $etat = $condition['etat'];
+                break; // Sortie du boucle dès qu'une condition est remplie
+            }
+        }
+                return $etat;
+    }*/
 }
