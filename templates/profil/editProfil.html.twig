@@ -3,7 +3,11 @@
 {% block body %}
     <div class="profil">
         <div class="avatarProfil">
+            {% if not participant.avatar %}
+            <img alt="Avatar de {{ participant.prenom }}" src="{{ asset('images/avatars/default.webp') }}">
+            {% else %}
             <img alt="Avatar de {{ participant.prenom }}" src="{{ asset('images/avatars/' ~ participant.avatar) }}">
+            {% endif %}
         </div>
         <div class="formProfil"><h1>Mon profil :</h1><br />
             {{ form(EditProfil) }}
