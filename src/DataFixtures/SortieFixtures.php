@@ -150,10 +150,10 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $etat4 = $manager->getRepository(Etat::class)->findOneBy(['libelle' => 'Clôturée']);
         $sortie4->setEtat($etat4);
 
-        $organisateur4 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Parker']);
+        $organisateur4 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Bonriner']);
         $sortie4->setOrganisateur($organisateur4);
 
-        $participant8 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Parker']);
+        $participant8 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Cavendish']);
         $participant9 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Bonriner']);
         $sortie4->addParticipant($participant8);
         $sortie4->addParticipant($participant9);
