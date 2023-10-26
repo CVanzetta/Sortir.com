@@ -137,7 +137,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie4->setNom('Sortie culturelle et Fun');
         $sortie4->setDateHeureDebut(new \DateTime('2023-11-15 14:00:00'));
         $sortie4->setDuree(3);
-        $sortie4->setDateLimiteInscription(new \DateTime('2023-11-14'));
+        $sortie4->setDateLimiteInscription(new \DateTime('2023-10-14'));
         $sortie4->setNbInscriptionsMax(12);
         $sortie4->setInfosSortie('Visite du Puy du Fou.');
 
@@ -147,7 +147,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $lieu4 = $manager->getRepository(Lieu::class)->findOneBy(['nom' => 'Puy du Fou']);
         $sortie4->setLieu($lieu4);
 
-        $etat4 = $manager->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
+        $etat4 = $manager->getRepository(Etat::class)->findOneBy(['libelle' => 'Clôturée']);
         $sortie4->setEtat($etat4);
 
         $organisateur4 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Parker']);
