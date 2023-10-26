@@ -3,16 +3,17 @@
 namespace App\Controller;
 
 use App\DTO\SearchData;
+use App\Entity\Etat;
 use App\Form\SortieFilterType;
 use App\Form\SortieType;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Sortie;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use App\Entity\Campus;
@@ -39,12 +40,9 @@ class SortieController extends AbstractController
         if (!$sortie) {
             throw $this->createNotFoundException('La sortie avec l\'ID ' . $id . ' n\'existe pas.');
         }
-
-
         return $this->render('sortie/afficher.html.twig', [
             'sortie' => $sortie,
         ]);
-
     }
 
     #[Route('/createSortie', name:'create_sortie')]
@@ -59,23 +57,83 @@ class SortieController extends AbstractController
         // Attribuez l'utilisateur actuel comme organisateur de la sortie
         $sortie->setOrganisateur($participant);
 
-        // Créez et gérez le formulaire, persistez la sortie, etc.
+        // Créez et gérez le formulaire
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+            $nbParticipants = $sortie->getParticipants()->count();
+            $nbInscriptionsMax = $sortie->getNbInscriptionsMax();
+            $dateActuelle = new \DateTime();
+            $dateLimiteInscription = $sortie->getDateLimiteInscription();
+            $dateActivité = $sortie->getDateHeureDebut();
+            $dateArchivation = clone $dateActivité;
+            $dateArchivation->modify('+1 month');
+            $dateArchiveAnnul =$sortie->getDateAnnulee();
+
+            if ($dateArchiveAnnul !== null) {
+                $dateArchiveAnnul->modify('+1 month');
+            }
+
+            $conditions = [
+                [
+                    'condition' => $nbParticipants < $nbInscriptionsMax && $dateActuelle < $dateLimiteInscription,
+                    'etat' => 'Ouvert',
+                ],
+                [
+                    'condition' => $nbParticipants == $nbInscriptionsMax,
+                    'etat' => 'Clôturée',
+                ],
+                [
+                    'condition' => $dateActuelle == $dateActivité,
+                    'etat' => 'Activité en Cours',
+                ],
+                [
+                    'condition' => $dateActuelle > $dateActivité,
+                    'etat' => 'Passée',
+                ],
+                [
+                    'condition' => $dateActuelle == $dateArchivation || $dateActuelle == $dateArchiveAnnul,
+                    'etat' => 'Archivée',
+                ],
+                [
+                    'condition' => $sortie->getDateAnnulee() !== null && $dateActuelle->format('Y-m-d H:i:s') === $sortie->getDateAnnulee()->format('Y-m-d H:i:s'),
+                    'etat' => 'Annulée',
+                ],
+            ];
+
+            $etat = 'Créée'; // État par défaut
+
+            foreach ($conditions as $condition) {
+                if ($condition['condition']) {
+                    $etat = $condition['etat'];
+                    break; // Sortie du boucle dès qu'une condition est remplie
+                }
+            }
+
+// Maintenant, $etat contient l'état correspondant à la première condition remplie
+            $etatEntity = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => $etat]);
+
+            if (!$etatEntity) {
+                throw $this->createNotFoundException('État non trouvé');
+            }
+
+            $sortie->setEtat($etatEntity);
+
+
             $this->entityManager->persist($sortie);
             $this->entityManager->flush();
 
-            // Redirigez l'utilisateur vers la page d'affichage de la sortie ou une autre page appropriée.
+            // Redirigez l'utilisateur vers la page d'affichage de la sortie.
             return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
         }
 
         return $this->render('sortie/create.html.twig', [
             'sortieForm' => $sortieForm->createView(),
+            'sortie' => $sortie,
         ]);
     }
-    #[Route('/inscription/{id}', name:'inscription_sortie')]
+    #[Route('/inscription', name:'inscription_sortie')]
 
     public function inscrireSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie, UserInterface $participant): Response
     {
@@ -167,5 +225,25 @@ class SortieController extends AbstractController
             'sorties' => $sorties,
         ]);
     }
+#[Route('/desinscription/{id}', name: 'desinscription_sortie')]
+public function desinscrireSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie, UserInterface $participant): Response
+{
+    $user = $this->getUser(); // Récupérez l'utilisateur connecté
+
+    // Vérifiez si le participant est inscrit à cette sortie
+    if ($sortie->getParticipants()->contains($participant)) {
+        // Le participant est inscrit, il peut se désinscrire
+        $sortie->removeParticipant($participant);
+        $entityManager->persist($sortie);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vous avez bien été désinscrit de cette sortie.');
+    } else {
+        // Le participant n'est pas inscrit, renvoyez un message d'erreur
+        $this->addFlash('error', 'Vous n\'êtes pas inscrit à cette sortie.');
+    }
+
+    return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
+}
 
 }

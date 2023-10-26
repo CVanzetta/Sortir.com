@@ -68,9 +68,9 @@
                                                 <a href="{{ path('modifier_sortie', {'id': sortie.id}) }}" class="btn btn-warning">Modifier</a>
                                                 <a href="{{ path('publier_sortie', {'id': sortie.id}) }}" class="btn btn-success">Publier</a>
                                             {% elseif app.user in sortie.participants %}
-                                                <a href="{{ path('se_desister', {'id': sortie.id}) }}" class="btn btn-danger">Se désister</a>
-                                            {% elseif not sortie.estPubliee and not app.user == sortie.organisateur %}
-                                                <a href="{{ path('s_inscrire', {'id': sortie.id}) }}" class="btn btn-success">S'inscrire</a>
+                                                <a href="{{ path('desinscription_sortie', {'id': sortie.id}) }}" class="btn btn-danger">Se désister</a>
+                                            {% elseif not utilisateurConnecte == sortie.organisateur %}
+                                                <a href="{{ path('inscription_sortie', {'id': sortie.id}) }}" class="btn btn-success">S'inscrire</a>
                                             {% endif %}
                                         {% elseif sortie.etat.libelle == 'Ouverte' %}
                                             {# Affichez ici les actions appropriées pour l'état "Ouverte" #}

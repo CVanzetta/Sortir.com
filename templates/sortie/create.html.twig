@@ -1,4 +1,7 @@
 {% extends 'base.html.twig' %}
+{% block javascripts %}
+<script src="{{ asset('js/sortieType.js') }}"></script>
+{% endblock %}
 {% block extrastyles %}
     <style>
         label{
@@ -27,19 +30,18 @@
     </style>
 {% endblock %}
 {% block body %}
-    <h1>Créer la sortie que vous voulez organiser</h1>
+    <h1>Créer une sortie</h1>
 
     {{ form_errors(sortieForm) }}
 
     {{ form_start(sortieForm) }}
     {{ form_widget(sortieForm) }} {# afficher tout mes champs d'un coup #}
 
-
-    <button type="submit" class="btn">Créer cette Sortie!</button>
+    <button type="submit" id="save" class="btn">Enregistrer</button>
+    <button type="submit" id="share" class="btn">Publier la Sortie</button>
+    <a href="{{ path('main_home') }}" class="btn" id="cancel">Annuler</a>
     {{ form_end(sortieForm) }}
 {% endblock %}
-
 {% block title %}
-    Organiser une Sortie
+    Creer une Sortie
 {% endblock %}
-

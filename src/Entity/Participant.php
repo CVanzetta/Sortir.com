@@ -25,7 +25,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $prenom = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $telephone = null;
+    private ?string $telephone = null;
 
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
@@ -88,12 +88,12 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getTelephone(): ?int
+    public function getTelephone(): ?string
     {
         return $this->telephone;
     }
 
-    public function setTelephone(?int $telephone): static
+    public function setTelephone(?string $telephone): static
     {
         $this->telephone = $telephone;
 

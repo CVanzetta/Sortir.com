@@ -1,7 +1,13 @@
 {%  extends 'base.html.twig' %}
 
+
 {% block body %}
     <h1>Bienvenue sur Sortir.com!</h1>
+
+
+
+    <a href="{{ path('create_sortie') }}" title="Création de Sortie">Créer une Sortie!</a>
+
 {% endblock %}
 
 {% block title %}

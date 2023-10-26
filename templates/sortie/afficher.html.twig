@@ -53,11 +53,6 @@
 
 
     <h2>Liste des participants inscrits</h2>
-        {% if sortie.hasAvailableSpots %}
-        <a href="{{ path('inscription_sortie', {'id': sortie.id}) }}" class="confirmation-link btn">S'inscrire</a>
-        {% else %}
-        <p>Plus de places disponibles</p>
-        {% endif %}
     <table>
         <thead>
         <tr>

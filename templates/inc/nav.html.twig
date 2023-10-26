@@ -1,10 +1,10 @@
 <nav>
     <img class="logonav" alt="logo" src="{{ asset('images/fav_icone.png') }}">
     <ul>
-        <li><a href="{{ path('main_home') }}" title="Home">Accueil</a></li>
         {% if app.user %}
+        <li><a href="{{ path('main_home') }}" title="Home">Accueil</a></li>
+
           {#<li><a href="{{ path('afficher_sortie', {'id': sortieId}) }}" title="Détails de la sortie">Détails de la sortie</a></li> #}
-            <li><a href="{{ path('create_sortie') }}" title="Création de Sortie">Créer une Sortie!</a></li>
             <li><a href="{{ path('profil_monProfil') }}" title="Profil">Mon Profil</a></li>
             <li><a href="{{ path('app_logout') }}">Se Déconnecter</a></li>
             {% if 'ROLE_ADMIN' in app.user.roles %}
