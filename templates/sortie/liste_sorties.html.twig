@@ -67,15 +67,21 @@
                                             {% if app.user == sortie.organisateur %}
                                                 <a href="{{ path('modifier_sortie', {'id': sortie.id}) }}" class="btn btn-warning">Modifier</a>
                                                 <a href="{{ path('publier_sortie', {'id': sortie.id}) }}" class="btn btn-success">Publier</a>
-                                            {% elseif app.user in sortie.participants %}
-                                                <a href="{{ path('desinscription_sortie', {'id': sortie.id}) }}" class="btn btn-danger">Se désister</a>
-                                            {% elseif not utilisateurConnecte == sortie.organisateur %}
-                                                <a href="{{ path('inscription_sortie', {'id': sortie.id}) }}" class="btn btn-success">S'inscrire</a>
                                             {% endif %}
                                         {% elseif sortie.etat.libelle == 'Ouverte' %}
-                                            {# Affichez ici les actions appropriées pour l'état "Ouverte" #}
+                                            {% if app.user in sortie.participants %}
+                                                <a href="{{ path('desinscription_sortie', {'id': sortie.id}) }}" class="btn btn-danger">Se désister</a>
+                                            {% else%}
+                                                <a href="{{ path('inscription_sortie', {'id': sortie.id}) }}" class="btn btn-success">S'inscrire</a>
+                                            {% endif %}
                                         {% elseif sortie.etat.libelle == 'Clôturée' %}
-                                            {# Affichez ici les actions appropriées pour l'état "Clôturée" #}
+                                            {% if app.user == sortie.organisateur %}
+                                                <a href="{{ path('modifier_sortie', {'id': sortie.id}) }}" class="btn btn-warning">Modifier</a>
+                                            {% endif %}
+                                        {% elseif sortie.etat.libelle == 'Passée' %}
+                                            {% if app.user == sortie.organisateur %}
+                                                <a href="{{ path('archiver_sortie', {'id': sortie.id}) }}" class="btn btn-warning">Archiver</a>
+                                            {% endif %}
                                         {% endif %}
                                     </td>
                                 </tr>

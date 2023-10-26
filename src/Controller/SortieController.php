@@ -66,8 +66,8 @@ class SortieController extends AbstractController
             $nbInscriptionsMax = $sortie->getNbInscriptionsMax();
             $dateActuelle = new \DateTime();
             $dateLimiteInscription = $sortie->getDateLimiteInscription();
-            $dateActivité = $sortie->getDateHeureDebut();
-            $dateArchivation = clone $dateActivité;
+            $dateActivite = $sortie->getDateHeureDebut();
+            $dateArchivation = clone $dateActivite;
             $dateArchivation->modify('+1 month');
             $dateArchiveAnnul =$sortie->getDateAnnulee();
 
@@ -78,18 +78,18 @@ class SortieController extends AbstractController
             $conditions = [
                 [
                     'condition' => $nbParticipants < $nbInscriptionsMax && $dateActuelle < $dateLimiteInscription,
-                    'etat' => 'Ouvert',
+                    'etat' => 'Ouverte',
                 ],
                 [
                     'condition' => $nbParticipants == $nbInscriptionsMax,
                     'etat' => 'Clôturée',
                 ],
                 [
-                    'condition' => $dateActuelle == $dateActivité,
+                    'condition' => $dateActuelle == $dateActivite,
                     'etat' => 'Activité en Cours',
                 ],
                 [
-                    'condition' => $dateActuelle > $dateActivité,
+                    'condition' => $dateActuelle > $dateActivite,
                     'etat' => 'Passée',
                 ],
                 [
@@ -132,37 +132,6 @@ class SortieController extends AbstractController
             'sortieForm' => $sortieForm->createView(),
             'sortie' => $sortie,
         ]);
-    }
-    #[Route('/inscription', name:'inscription_sortie')]
-
-    public function inscrireSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie, UserInterface $participant): Response
-    {
-        $user = $this->getUser(); // Récupérer l'utilisateur connecté
-
-        // Vérifiez si le participant est déjà inscrit à cette sortie
-        if (!$sortie->getParticipants()->contains($participant)) {
-            // Vérifiez si la date limite d'inscription est dépassée
-            $dateLimiteInscription = $sortie->getDateLimiteInscription();
-            $now = new \DateTime();
-            if ($dateLimiteInscription >= $now) {
-
-                // Le participant peut s'inscrire
-                $sortie->addParticipant($participant);
-                $entityManager->persist($sortie);
-                $entityManager->flush();
-
-                $this->addFlash('success', 'Vous avez bien été inscrit à cette sortie.');
-
-            } else {
-                // La date limite d'inscription est dépassée, renvoyez un message d'erreur
-                $this->addFlash('error', 'La date limite d\'inscription est dépassée.');
-            }
-        } else {
-            // Le participant est déjà inscrit, renvoyez un message d'erreur
-            $this->addFlash('error', 'Vous êtes déjà inscrit à cette sortie.');
-        }
-
-        return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
     }
 
     #[Route('/liste-sorties', name: 'liste_sorties')]
@@ -225,7 +194,39 @@ class SortieController extends AbstractController
             'sorties' => $sorties,
         ]);
     }
-#[Route('/desinscription/{id}', name: 'desinscription_sortie')]
+    #[Route('/inscription/{id}', name:'inscription_sortie')]
+
+    public function inscrireSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie, UserInterface $participant): Response
+    {
+        $user = $this->getUser(); // Récupérer l'utilisateur connecté
+
+        // Vérifiez si le participant est déjà inscrit à cette sortie
+        if (!$sortie->getParticipants()->contains($participant)) {
+            // Vérifiez si la date limite d'inscription est dépassée
+            $dateLimiteInscription = $sortie->getDateLimiteInscription();
+            $now = new \DateTime();
+            if ($dateLimiteInscription >= $now) {
+
+                // Le participant peut s'inscrire
+                $sortie->addParticipant($participant);
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Vous avez bien été inscrit à cette sortie.');
+
+            } else {
+                // La date limite d'inscription est dépassée, renvoyez un message d'erreur
+                $this->addFlash('error', 'La date limite d\'inscription est dépassée.');
+            }
+        } else {
+            // Le participant est déjà inscrit, renvoyez un message d'erreur
+            $this->addFlash('error', 'Vous êtes déjà inscrit à cette sortie.');
+        }
+
+        return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
+    }
+
+    #[Route('/desinscription/{id}', name: 'desinscription_sortie')]
 public function desinscrireSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie, UserInterface $participant): Response
 {
     $user = $this->getUser(); // Récupérez l'utilisateur connecté
