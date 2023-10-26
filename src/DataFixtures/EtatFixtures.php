@@ -11,12 +11,15 @@ class EtatFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $etatsData =    [
-            ['libelle' => 'En création'],
+            ['libelle' => 'En Création'],
             ['libelle' => 'Ouverte'],
             ['libelle' => 'Clôturée'],
             ['libelle' => 'Activité en cours'],
             ['libelle' => 'Passée'],
             ['libelle' => 'Annulée'],
+            ['libelle' => 'Archivée'],
+            ['libelle' => 'Créée'],
+
         ];
 
 

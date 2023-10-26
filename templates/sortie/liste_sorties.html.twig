@@ -69,7 +69,9 @@
                                                 <a href="{{ path('publier_sortie', {'id': sortie.id}) }}" class="btn btn-success">Publier</a>
                                             {% endif %}
                                         {% elseif sortie.etat.libelle == 'Ouverte' %}
-                                            {% if app.user in sortie.participants %}
+                                            {% if app.user == sortie.organisateur %}
+                                                <!-- Vous êtes l'organisateur, ne montrez rien ici -->
+                                            {% elseif app.user in sortie.participants %}
                                                 <a href="{{ path('desinscription_sortie', {'id': sortie.id}) }}" class="btn btn-danger">Se désister</a>
                                             {% else%}
                                                 <a href="{{ path('inscription_sortie', {'id': sortie.id}) }}" class="btn btn-success">S'inscrire</a>
