@@ -212,6 +212,32 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
 
         $manager->persist($sortie6);
 
+
+        // Sortie 7
+        $sortie7 = new Sortie();
+        $sortie7->setNom('il y a plus de un mois');
+        $sortie7->setDateHeureDebut(new \DateTime('2023-06-25 11:30:00'));
+        $sortie7->setDuree(5);
+        $sortie7->setDateLimiteInscription(new \DateTime('2023-06-24'));
+        $sortie7->setNbInscriptionsMax(18);
+        $sortie7->setInfosSortie('trop vieux');
+
+        $campus7 = $manager->getRepository(Campus::class)->findOneBy(['nom' => 'Angers']);
+        $sortie7->setCampus($campus7);
+
+        $lieu7 = $manager->getRepository(Lieu::class)->findOneBy(['nom' => 'Futuroscope']);
+        $sortie7->setLieu($lieu7);
+
+        $etat7 = $manager->getRepository(Etat::class)->findOneBy(['libelle' => 'Passée']);
+        $sortie7->setEtat($etat7);
+
+        $organisateur7 = $manager->getRepository(Participant::class)->findOneBy(['nom' => 'Parker']);
+        $sortie7->setOrganisateur($organisateur7);
+
+
+        $manager->persist($sortie7);
+
+
         $manager->flush();
 
     }
