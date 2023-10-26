@@ -2,10 +2,12 @@
 
 {% block body %}
     <div class="profil">
-    <div class="hProfil"><h1>Mon profil :</h1><br /></div>
-    <div class="formProfil">
-    {{ form(EditProfil) }}
-    </div>
+        <div class="avatarProfil">
+            <img alt="Avatar de {{ participant.prenom }}" src="{{ asset('images/avatars/' ~ participant.avatar) }}">
+        </div>
+        <div class="formProfil"><h1>Mon profil :</h1><br />
+            {{ form(EditProfil) }}
+        </div>
     </div>
 
     <a href="{{ path('profil_afficherProfil', {'id': app.user.id}) }}" title="afficher profil">{{ app.user.prenom }}</a>

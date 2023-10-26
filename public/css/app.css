@@ -114,16 +114,10 @@ footer {
 }
 
 .profil {
+    display: flex;
     margin-left: auto;
     margin-right: auto;
     width: 100%;
-}
-
-.hProfil {
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    width: 300px;
 }
 
 .formProfil {
@@ -131,6 +125,15 @@ footer {
     margin-right: auto;
     text-align: center;
     width: 300px;
+}
+
+.avatarProfil {
+    display: flex;
+    float : left;
+    height: 200px;
+    width: 200px;
+    margin-left: 100px;
+    margin-top: 100px;
 }
 
 .column-nom {

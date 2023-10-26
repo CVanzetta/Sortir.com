@@ -53,6 +53,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participants')]
     private Collection $sorties;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatar = null;
+
     public function __construct()
     {
         $this->sortiesOrganiser = new ArrayCollection();
@@ -257,5 +260,17 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
             return ['ROLE_USER'];
         }
 
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): static
+    {
+        $this->avatar = $avatar;
+
+        return $this;
     }
 }

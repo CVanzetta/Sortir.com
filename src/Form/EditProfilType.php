@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Participant;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -37,6 +38,12 @@ class EditProfilType extends AbstractType
                 'mapped' => false,
                 'first_options'  => ['label' => 'Mot de passe : '],
                 'second_options' => ['label' => 'Confirmation : '],
+            ])
+            ->add('avatar', FileType::class, [
+                'label' => 'Choisir un Avatar :',
+                'multiple' => false,
+                'mapped' => false,
+                'required' => false
             ])
             ->add('Valider', SubmitType::class)
         ;

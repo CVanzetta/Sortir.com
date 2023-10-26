@@ -6,7 +6,9 @@ use App\Entity\Campus;
 use App\Entity\Participant;
 use App\Form\EditProfilType;
 use App\Repository\ParticipantRepository;
+use App\Service\AvatarService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,8 +19,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ProfilController extends AbstractController
 {
+
     #[Route('/monProfil', name:'profil_monProfil')]
-    public function editProfil(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function editProfil(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher,
+    AvatarService $avatarService, ParameterBagInterface $params): Response
     {
         /** @var Participant $participant */
         $participant = $this->getUser();
@@ -36,6 +40,13 @@ class ProfilController extends AbstractController
                     $newPass);
                 $participant->setMotPasse($hashPass);*/
             }
+            $avatar = $form->get('avatar')->getData();
+            if (null != $avatar) {
+                $avatarName = $participant->getAvatar();
+                $avatarService->delete($avatarName);
+            }
+            $fichier = $avatarService->add($avatar);
+            $participant->setAvatar($fichier);
             $entityManager->persist($participant);
             $entityManager->flush();
 
@@ -44,6 +55,7 @@ class ProfilController extends AbstractController
         }
         return $this->render('profil/editProfil.html.twig', [
         'EditProfil' => $form->createView(),
+        'participant' => $participant
     ]);
     }
 
