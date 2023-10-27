@@ -26,7 +26,8 @@ class MainController extends AbstractController
         $campusController->addCampus($this->entityManager);
 
         if ($this->isGranted('IS_AUTHENTICATED')){
-            return $this->render(view: 'main/home.html.twig');
+            return $this->redirectToRoute('liste_sorties');
+            //return $this->render(view: 'main/home.html.twig');
         } else {
         return $this->render(view: 'security/login.html.twig');
         }

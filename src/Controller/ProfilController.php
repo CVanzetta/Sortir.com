@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Campus;
 use App\Entity\Participant;
+use App\Entity\Sortie;
 use App\Form\EditProfilType;
 use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
 use App\Service\AvatarService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
