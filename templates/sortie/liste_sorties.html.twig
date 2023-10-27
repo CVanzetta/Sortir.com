@@ -70,7 +70,7 @@
                                             {% endif %}
                                         {% elseif sortie.etat.libelle == 'Ouverte' %}
                                             {% if app.user == sortie.organisateur %}
-
+                                                <a href="{{ path('modifier_sortie', {'id': sortie.id}) }}" class="btn btn-warning">Modifier</a>
                                                 <!-- TODO: pour l'organisateur, ajouter le liens a la page annuler -->
                                             {% elseif app.user in sortie.participants %}
                                                 <a href="{{ path('desinscription_sortie', {'id': sortie.id}) }}" class="btn btn-danger">Se désister</a>
@@ -99,5 +99,6 @@
                 </table>
             </div>
         </div>
+        <a href="{{ path('create_sortie') }}" title="Création de Sortie">Créer une Sortie!</a>
     </div>
 {% endblock %}

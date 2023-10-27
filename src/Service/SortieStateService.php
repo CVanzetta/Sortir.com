@@ -1,34 +1,16 @@
 <?php
 
-namespace App\EventListener;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\EventDispatcher\GenericEvent;
+namespace App\Service;
+
 use App\Entity\Sortie;
 
-class SortieStateListener implements EventSubscriberInterface
+class SortieStateService
 {
-    public static function getSubscribedEvents(): array
+    public function calculateState(Sortie $sortie)
     {
-        return [
-            'sortie.refresh_state' => 'onSortieRefreshState',
-        ];
-    }
+        // Votre logique de calcul de l'état ici
 
-    public function onSortieRefreshState(GenericEvent $event): void
-    {
-        // Récupérez la sortie depuis l'événement
-        $sortie = $event->getSubject();
-
-        // Recalcul de l'état en fonction du nombre de participants, de la date, etc.
-        $etat = $this->determineSortieState($sortie);
-
-        // Mettez à jour l'état de la sortie
-        $sortie->setEtat($etat);
-    }
-
-    private function determineSortieState(Sortie $sortie)
-    {
         $nbParticipants = $sortie->getParticipants()->count();
         $nbInscriptionsMax = $sortie->getNbInscriptionsMax();
         $dateActuelle = new \DateTime();
@@ -69,15 +51,16 @@ class SortieStateListener implements EventSubscriberInterface
             ],
         ];
 
+
         $etat = 'Créée'; // État par défaut
 
         foreach ($conditions as $condition) {
             if ($condition['condition']) {
                 $etat = $condition['etat'];
-                break; // Sortie du boucle dès qu'une condition est remplie
+                break;
             }
+        }
 
-
-        }  return $etat;
+        return $etat;
     }
 }

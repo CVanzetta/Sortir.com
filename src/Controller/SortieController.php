@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\DTO\SearchData;
 use App\Entity\Etat;
+use App\Form\EditSortieType;
 use App\Form\SortieFilterType;
 use App\Form\SortieType;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +18,7 @@ use App\Entity\Sortie;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use App\Entity\Campus;
+use App\Service\SortieStateService;
 
 
 
@@ -25,11 +27,13 @@ class SortieController extends AbstractController
 {
     private $entityManager;
     private $authorizationChecker;
+    private $sortieStateService;
 
-    public function __construct(EntityManagerInterface $entityManager, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(EntityManagerInterface $entityManager, AuthorizationCheckerInterface $authorizationChecker, SortieStateService $sortieStateService)
     {
         $this->entityManager = $entityManager;
         $this->authorizationChecker = $authorizationChecker;
+        $this->sortieStateService = $sortieStateService;
     }
 
     #[Route("/afficher-sortie/{id}", name: "afficher_sortie")]
@@ -219,7 +223,7 @@ class SortieController extends AbstractController
     public function editSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie): Response
     {
         // Créez et gérez le formulaire de modification de la sortie
-        $form = $this->createForm(SortieType::class, $sortie);
+        $form = $this->createForm(EditSortieType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -233,6 +237,10 @@ class SortieController extends AbstractController
                 // Bouton "Supprimer" a été cliqué
                 $etat = 'Annulée';
             }
+
+            // Mettez à jour l'état de la sortie
+            $sortie->setEtat($etat);
+
             // Enregistrez les modifications dans la base de données
             $entityManager->persist($sortie);
             $entityManager->flush();
@@ -250,24 +258,19 @@ class SortieController extends AbstractController
     #[Route('/updateSortie/{id}', name: 'publier_sortie')]
     public function updateSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie): Response
     {
-        $form = $this->createForm(SortieType::class, $sortie);
-        $form->handleRequest($request);
+        $etatOuverte = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
 
-        // Modifiez l'état de la sortie pour la publier (si toutes les conditions sont remplies)
-        $sortie->setEtat('Ouverte');
+        if ($etatOuverte) {
+            // Définissez l'état de la sortie sur l'objet Etat correspondant
+            $sortie->setEtat($etatOuverte);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-        // Enregistrez les modifications dans la base de données
-        $entityManager->persist($sortie);
-        $entityManager->flush();
-
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+        }
         // Redirigez l'utilisateur vers la page d'affichage de la sortie publiée
-        return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
+        return $this->redirectToRoute('liste_sorties');
     }
-        return $this->render('sortie/edit.html.twig', [
-            'sortieForm' => $form->createView(),
-            'sortie' => $sortie,]);
-    }
+
 
 
    /* public function etatSortie(Sortie $sortie): string
