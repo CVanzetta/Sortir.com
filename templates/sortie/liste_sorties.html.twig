@@ -63,6 +63,9 @@
                                     <td>{{ sortie.organisateur.nom }}</td>
                                     <td>
                                         <a href="{{ path('afficher_sortie', {'id': sortie.id}) }}" class="btn btn-primary">Afficher</a>
+                                        {% if sortie.etat.libelle == 'Créée' and app.user == sortie.organisateur %}
+                                            <a href="{{ path('modifier_sortie', {'id': sortie.id}) }}" class="btn btn-warning">Modifier</a>
+                                        {% endif %}
                                         {% if sortie.etat.libelle == 'Créée' %}
                                             {% if app.user == sortie.organisateur %}
                                                 <a href="{{ path('modifier_sortie', {'id': sortie.id}) }}" class="btn btn-warning">Modifier</a>
@@ -71,7 +74,8 @@
                                         {% elseif sortie.etat.libelle == 'Ouverte' %}
                                             {% if app.user == sortie.organisateur %}
                                                 <a href="{{ path('modifier_sortie', {'id': sortie.id}) }}" class="btn btn-warning">Modifier</a>
-                                                <!-- TODO: pour l'organisateur, ajouter le liens a la page annuler -->
+                                                <a href="{{ path('annuler_sortie_confirmation', {'id': sortie.id}) }}" class="btn btn-danger">Annuler</a>
+
                                             {% elseif app.user in sortie.participants %}
                                                 <a href="{{ path('desinscription_sortie', {'id': sortie.id}) }}" class="btn btn-danger">Se désister</a>
                                             {% else%}
