@@ -279,6 +279,39 @@ class SortieController extends AbstractController
     }
 
 
+    #[Route('/annulerSortie/{id}/confirmation', name: 'annuler_sortie_confirmation')]
+    public function annulerSortieConfirmation(Sortie $sortie): Response
+    {
+        return $this->render('sortie/annuler_sortie_confirmation.html.twig', ['sortie' => $sortie]);
+    }
+
+
+    #[Route('/annulerSortie/{id}', name: 'annuler_sortie')]
+    public function annulerSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie): Response
+    {
+        $user = $this->getUser();
+
+
+        if ($user === $sortie->getOrganisateur()) {
+            if ($sortie->getEtat()->getLibelle() === 'Ouverte') {
+                $etatAnnule = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Annulée']);
+                $sortie->setEtat($etatAnnule);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'La sortie a été annulée avec succès.');
+            } else {
+                $this->addFlash('error', "La sortie ne peut pas être annulée car son état n'est pas 'Ouverte'.");
+            }
+        } else {
+            $this->addFlash('error', "Vous n'êtes pas l'organisateur de cette sortie, vous ne pouvez pas l'annuler.");
+    }
+
+        return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
+    }
+
+
+
+
 
    /* public function etatSortie(Sortie $sortie): string
     {
