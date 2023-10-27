@@ -222,9 +222,11 @@ class SortieController extends AbstractController
     #[Route('/editSortie/{id}', name: 'modifier_sortie')]
     public function editSortie(Request $request, EntityManagerInterface $entityManager, Sortie $sortie): Response
     {
-        // Créez et gérez le formulaire de modification de la sortie
+
         $form = $this->createForm(EditSortieType::class, $sortie);
         $form->handleRequest($request);
+
+        $etat = 'Créée';
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($request->request->has('save')) {
@@ -237,16 +239,21 @@ class SortieController extends AbstractController
                 // Bouton "Supprimer" a été cliqué
                 $etat = 'Annulée';
             }
+// Maintenant, $etat contient l'état correspondant à la première condition remplie
+            $etatEntity = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => $etat]);
 
-            // Mettez à jour l'état de la sortie
-            $sortie->setEtat($etat);
+            if (!$etatEntity) {
+                throw $this->createNotFoundException('État non trouvé');
+            }
+
+                $sortie->setEtat($etatEntity);
 
             // Enregistrez les modifications dans la base de données
             $entityManager->persist($sortie);
             $entityManager->flush();
 
             // Redirigez l'utilisateur vers la page d'affichage de la sortie modifiée
-            return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
+            return $this->redirectToRoute('liste_sorties');
         }
 
         return $this->render('sortie/edit.html.twig', [

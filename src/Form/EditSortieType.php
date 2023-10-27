@@ -39,7 +39,7 @@ class EditSortieType extends AbstractType
                 'label' => 'Description et Infos',
             ]);
 
-        // Ajoutez d'autres champs que vous souhaitez modifier
+        // TODO Ajoutez les autres champs à modifier
 
     }
 

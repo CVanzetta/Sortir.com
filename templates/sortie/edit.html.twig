@@ -40,7 +40,8 @@
     {{ form_widget(sortieForm) }}
     <button type="submit" id="save" class="btn">Enregistrer</button>
     <button type="submit" id="update" class="btn">Publier la Sortie</button>
-    <button type="submit" id="delete" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette sortie ?');">Supprimer la sortie</button><a href="{{ path('supprimer_sortie', {'id': sortie.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette sortie ?');">Supprimer</a>
+    <button type="submit" id="delete" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette sortie ?');">Annuler la sortie</button>
+    <a href="{{ path('supprimer_sortie', {'id': sortie.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette sortie ?');">Supprimer</a>
     <a href="{{ path('main_home') }}" class="btn" id="cancel">Annuler</a>
     {{ form_end(sortieForm) }}
 
